@@ -1,7 +1,9 @@
-
+ 
 #include "Scene.h"
 #include "QuadModel.h"
 #include "OBJModel.h"
+#include "cubemodel.h"
+
 
 Scene::Scene(
 	ID3D11Device* dxdevice,
@@ -50,6 +52,8 @@ void OurTestScene::Init()
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
+	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_anotherCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 }
 
 //
@@ -70,6 +74,10 @@ void OurTestScene::Update(
 	if (input_handler.IsKeyPressed(Keys::Left) || input_handler.IsKeyPressed(Keys::A))
 		m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
 
+	long mousedx = input_handler.GetMouseDeltaX();
+	long mousedy = input_handler.GetMouseDeltaY();
+	m_camera->rotation(mousedx, mousedy);
+
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
 	// but the T*R*S order is most common; i.e. scale, then rotate, and then translate.
@@ -84,7 +92,15 @@ void OurTestScene::Update(
 	// Sponza model-to-world transformation
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
-		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
+		mat4f::scaling(0.05f);			 // The scene is quite large so scale it down to 5%
+
+	m_cube_transform = mat4f::translation(-0.5,0,0) *
+		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *
+		mat4f::scaling(1.5, 1.5, 1.5);
+
+    m_anotherCube_transfrom = mat4f::translation(0, 0, 0) *
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
+		mat4f::scaling(1.5, 1.5, 1.5);
 
 	// Increment the rotation angle.
 	m_angle += m_angular_velocity * dt;
@@ -113,7 +129,13 @@ void OurTestScene::Render()
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
-	m_quad->Render();
+	//m_quad->Render();
+
+	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
+	m_cube->Render();
+
+	UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
+	m_anotherCube->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);

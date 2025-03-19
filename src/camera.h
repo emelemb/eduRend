@@ -38,6 +38,9 @@ public:
 	*/
 	void Move(const linalg::vec3f& direction) noexcept;
 
+
+	void rotation(float dy, float dx) noexcept;
+
 	/**
 	 * @brief Changes the camera aspect ratio.
 	 * @param[in] aspect_ratio New aspect ratio, calculate with width / height
@@ -71,6 +74,9 @@ private:
 	// numerical precision in the z-buffer
 	float m_near_plane;
 	float m_far_plane;
+	float sensitivity = 0.01f;
+	float pitch = 0.0000f;
+	float yaw = 0.0f;
 
 	linalg::vec3f m_position;
 };
