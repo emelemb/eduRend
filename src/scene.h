@@ -89,18 +89,27 @@ class OurTestScene : public Scene
 	Model* m_sponza;
 	Model* m_cube;
 	Model* m_anotherCube;
+	Model* m_moon;
+	Model* m_verticalMoon;
+	Model* m_verticalSmallMoon;
+	Model* m_verticalCube;
 
 	mat4f m_sponza_transform;
 	mat4f m_quad_transform;
 	mat4f m_cube_transform;
 	mat4f m_anotherCube_transfrom;
+	mat4f m_moon_transform;
+	mat4f m_verticalMoon_transform;
+	mat4f m_verticalSmallMoon_transform;
+	mat4f m_verticalCube_transform;
+
 
 	mat4f m_view_matrix;
 	mat4f m_projection_matrix;
 
 	// Misc
 	float m_angle = 0;			// A per-frame updated rotation angle (radians)...
-	float m_angular_velocity = 10 ;	// ...and its velocity (radians/sec)
+	float m_angular_velocity = 2;	// ...and its velocity (radians/sec)
 	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
 

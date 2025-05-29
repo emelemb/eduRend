@@ -35,6 +35,11 @@ mat4f Camera::WorldToViewMatrix() const noexcept
 	return translationMatrix * rotationMatrix;
 }
 
+void cameraAssign2()
+{
+
+}
+
 
 
 mat4f Camera::ProjectionMatrix() const noexcept

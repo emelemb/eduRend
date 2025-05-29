@@ -54,6 +54,10 @@ void OurTestScene::Init()
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_anotherCube = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_moon = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_verticalMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 }
 
 //
@@ -94,15 +98,35 @@ void OurTestScene::Update(
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
 		mat4f::scaling(0.05f);			 // The scene is quite large so scale it down to 5%
 
-	m_cube_transform = mat4f::translation(-0.5,0,0) *
+	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(1.5, 1.5, 1.5);
+
+	m_verticalCube_transform = mat4f::translation(0, 1, 0) *			// No translation
+		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(0.1, 0.1, 0.1);
+
+	m_verticalMoon_transform = m_verticalCube_transform *
+		mat4f::translation(0, 40, 0) *
 		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *
-		mat4f::scaling(1.5, 1.5, 1.5);
+		mat4f::scaling(8, 8, 8);
 
-    m_anotherCube_transfrom = mat4f::translation(0, 0, 0) *
+	m_verticalSmallMoon_transform = m_verticalMoon_transform *
+		mat4f::translation(0, 3, 0)*
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
-		mat4f::scaling(1.5, 1.5, 1.5);
+		mat4f::scaling(0.5, 0.5, 0.5);
 
-	// Increment the rotation angle.
+    m_anotherCube_transfrom = m_cube_transform *
+		mat4f::translation(3, 0.5, 0) *
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
+		mat4f::scaling( 0.5, 0.5, 0.5);
+
+	m_moon_transform = m_anotherCube_transfrom *
+		mat4f::translation(5, 0.2, 0) *
+		mat4f::rotation(-m_angle, 0.0f, 3.0f, 0.0f) *
+		mat4f::scaling(0.2, 0.2, 0.2);
+
+	// Increment the rotation angle1
 	m_angle += m_angular_velocity * dt;
 
 	// Print fps
@@ -136,6 +160,15 @@ void OurTestScene::Render()
 
 	UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();
+
+	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
+	m_moon->Render();
+
+	UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
+	m_verticalMoon->Render();
+
+	UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
+	m_verticalSmallMoon->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);

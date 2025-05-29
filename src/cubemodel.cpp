@@ -14,23 +14,23 @@ CubeModel::CubeModel(
 	Vertex v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23;
 
 	v0.Position = { 0, 0.5, 0 };
-	v0.Normal = { 1, 0, 0 };
+	v0.Normal = { -1, 0, 0 };
 	v0.TexCoord = { 0, 0 };
 	v1.Position = { 0, 0.5, 0 };
-	v1.Normal = { 0, 1, 0};
+	v1.Normal = { 0, -1, 0};
 	v1.TexCoord = { 0, 0 };
 	v2.Position = { 0, 0.5, 0 };
-	v2.Normal = { 0, 0, 1 };
+	v2.Normal = { 0, 0, -1 };
 	v2.TexCoord = { 0, 0};
 
 	v3.Position = { 0, 1.5, 0 };
-	v3.Normal = { 1, 0, 0};
+	v3.Normal = { -1, 0, 0};
 	v3.TexCoord = { 0, 1 };
 	v4.Position = { 0, 1.5, 0 };
 	v4.Normal = { 0, 1, 0 };
 	v4.TexCoord = { 0, 1 };
 	v5.Position = { 0, 1.5, 0 };
-	v5.Normal = { 0, 0, 1 };
+	v5.Normal = { 0, 0, -1 };
 	v5.TexCoord = { 0, 1 };
 
 	v6.Position = { 1, 1.5, 0 };
@@ -40,31 +40,31 @@ CubeModel::CubeModel(
 	v7.Normal = { 0, 1, 0 };
 	v7.TexCoord = { 1, 1 };
 	v8.Position = { 1, 1.5, 0 };
-	v8.Normal = { 0, 0, 1 };
+	v8.Normal = { 0, 0, -1 };
 	v8.TexCoord = { 1, 1 };
 
 	v9.Position = { 1, 0.5, 0 };
 	v9.Normal = { 1, 0, 0 };
 	v9.TexCoord = { 1, 0};
 	v10.Position = { 1, 0.5, 0 };
-	v10.Normal = { 0, 1, 0 };
+	v10.Normal = { 0, -1, 0 };
 	v10.TexCoord = { 1, 0 };
 	v11.Position = { 1, 0.5, 0 };
-	v11.Normal = { 0, 0, 1 };
+	v11.Normal = { 0, 0, -1 };
 	v11.TexCoord = { 1, 0 };
 
 	v12.Position = { 0, 0.5, 1 };
-	v12.Normal = { 1, 0, 0 };
+	v12.Normal = { -1, 0, 0 };
 	v12.TexCoord = { 0, 0 };
 	v13.Position = { 0, 0.5, 1 };
-	v13.Normal = { 0, 1, 0 };
+	v13.Normal = { 0, -1, 0 };
 	v13.TexCoord = { 0, 0 };
 	v14.Position = { 0, 0.5, 1 };
 	v14.Normal = { 0, 0, 1 };
 	v14.TexCoord = { 0, 0 };
 
 	v15.Position = { 0, 1.5, 1 };
-	v15.Normal = { 1, 0, 0 };
+	v15.Normal = { -1, 0, 0 };
 	v15.TexCoord = { 0, 1};
 	v16.Position = { 0, 1.5, 1 };
 	v16.Normal = { 0 ,1, 0 };
@@ -87,7 +87,7 @@ CubeModel::CubeModel(
 	v21.Normal = { 1 ,0, 0 };
 	v21.TexCoord = { 1, 1 };
 	v22.Position = { 1, 0.5, 1 };
-	v22.Normal = { 0 ,1, 0 };
+	v22.Normal = { 0 ,-1, 0 };
 	v22.TexCoord = { 1, 1 };
 	v23.Position = { 1, 0.5, 1 };
 	v23.Normal = { 0 ,0, 1 };
