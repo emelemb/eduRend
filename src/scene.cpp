@@ -32,6 +32,7 @@ OurTestScene::OurTestScene(
 	Scene(dxdevice, dxdevice_context, window_width, window_height)
 { 
 	InitTransformationBuffer();
+	InitCameraAndLightBuffer();
 	// + init other CBuffers
 }
 
@@ -137,6 +138,8 @@ void OurTestScene::Update(
 //		printf("fps %i\n", (int)(1.0f / dt));
 		m_fps_cooldown = 2.0;
 	}
+
+	UpdateCameraAndLightBuffer();
 }
 
 //
@@ -146,13 +149,15 @@ void OurTestScene::Render()
 {
 	// Bind transformation_buffer to slot b0 of the VS
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
+	m_dxdevice_context->PSSetConstantBuffers(0,1,&m_cameraAndLightBuffer);
+
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
 	// Load matrices + the Quad's transformation to the device and render it
-	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
+	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	//m_quad->Render();
 
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
@@ -161,14 +166,14 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();
 
-	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
-	m_moon->Render();
+	//UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);sds
+	//m_moon->Render();
 
-	UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
-	m_verticalMoon->Render();
+	//UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
+	//m_verticalMoon->Render();
 
-	UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
-	m_verticalSmallMoon->Render();
+	//UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
+	//m_verticalSmallMoon->Render();s
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
@@ -182,6 +187,7 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_camera);
 
 	SAFE_RELEASE(m_transformation_buffer);
+	SAFE_RELEASE(m_cameraAndLightBuffer);
 	// + release other CBuffers
 }
 
@@ -193,6 +199,32 @@ void OurTestScene::OnWindowResized(
 		m_camera->SetAspect(float(new_width) / new_height);
 
 	Scene::OnWindowResized(new_width, new_height);
+}
+
+void::OurTestScene::InitCameraAndLightBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC cameraLightBufferDESC = { 0 };
+	cameraLightBufferDESC.Usage = D3D11_USAGE_DYNAMIC;
+	cameraLightBufferDESC.ByteWidth = sizeof(CameraAndLightBuffer);
+	cameraLightBufferDESC.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cameraLightBufferDESC.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cameraLightBufferDESC.MiscFlags = 0;
+	cameraLightBufferDESC.StructureByteStride = 0;
+	ASSERT(hr = m_dxdevice->CreateBuffer(&cameraLightBufferDESC, nullptr, &m_cameraAndLightBuffer));
+}
+
+void OurTestScene::UpdateCameraAndLightBuffer()
+{
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_cameraAndLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	CameraAndLightBuffer* cameraANDlight= (CameraAndLightBuffer*)resource.pData;
+	vec3f cameraPos = m_camera->GetPosition();
+	cameraANDlight->cameraPos = vec4f(cameraPos.x, cameraPos.y, cameraPos.z, 1.0f);
+	cameraANDlight->lightPos = vec4f(10.0f * cos(m_angle), 5.0f, 10.0f * sin(m_angle), 1.0f);
+	cameraANDlight->lightCol = vec4f(1.0f, 1.0f, 1.0f, 1.0f);
+	m_dxdevice_context->Unmap(m_cameraAndLightBuffer, 0);
+
 }
 
 void OurTestScene::InitTransformationBuffer()
