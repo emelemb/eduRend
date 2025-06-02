@@ -134,4 +134,5 @@ OBJModel::~OBJModel()
 
 		// Release other used textures ...
 	}
+	SAFE_RELEASE(m_material_buffer);
 }

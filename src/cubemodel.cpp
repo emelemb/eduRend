@@ -207,7 +207,7 @@ CubeModel::CubeModel(
 
 	m_number_of_indices = (unsigned int)indices.size();
 
-	HRESULT hr = LoadTextureFromFile(m_dxdevice, m_dxdevice_context, "assets/textures/yroadcrossing.png", &material.DiffuseTexture);
+	//HRESULT hr = LoadTextureFromFile(m_dxdevice, m_dxdevice_context, "assets/textures/yroadcrossing.png", &material.DiffuseTexture);
 }
 
 
@@ -237,6 +237,9 @@ void CubeModel::Render() const
 
 	// Bind our index buffer
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Diffuse
+	m_dxdevice_context->PSSetShaderResources(0, 1, &m_diffuseTexture.TextureView);
 
 	// Make the drawcall
 	m_dxdevice_context->DrawIndexed(m_number_of_indices, 0, 0);

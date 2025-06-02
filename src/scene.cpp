@@ -35,7 +35,7 @@ OurTestScene::OurTestScene(
 	InitCameraAndLightBuffer();
 	// + init other CBuffers
 
-	SetSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	SetSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
 }
 
 //
@@ -73,6 +73,8 @@ void OurTestScene::Init()
 
 	m_cube->SetMaterial(sphere_material);
 	m_anotherCube->SetMaterial(verticalMoon_material);
+
+	m_cube->SetDiffuseTexture("assets/textures/yroadcrossing.png");
 }
 
 //
@@ -274,7 +276,7 @@ void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE te
 	D3D11_SAMPLER_DESC samplerDESC =
 	{
 		filter, textureAddressMode, textureAddressMode, textureAddressMode,
-		0.0f, 16, D3D11_COMPARISON_NEVER, {1.0f, 1.0f, 1.0f, 10.0f}, -FLT_MAX , FLT_MAX,
+		0.0f, 16, D3D11_COMPARISON_NEVER, {1.0f, 1.0f, 1.0f, 1.0f}, -FLT_MAX , FLT_MAX,
 	};
 	m_dxdevice->CreateSamplerState(&samplerDESC, &samplerState);
 }

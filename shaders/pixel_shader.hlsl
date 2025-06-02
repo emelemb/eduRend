@@ -54,8 +54,8 @@ float4 PS_main(PSIn input) : SV_Target
     float4 textureColor;
 
     float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
-   // return float4(finalColor, 1.0f);
-    return float4(diffuseTexture);
+    return float4(diffuseTexture.xyz, 1.0f);
+    
     
     
 }

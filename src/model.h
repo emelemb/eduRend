@@ -36,6 +36,8 @@ protected:
 
 	Material material;
 
+	Texture m_diffuseTexture;
+
 public:
 
 	/**
@@ -55,6 +57,19 @@ public:
 		ASSERT(SUCCEEDED(hr));
 	}
 	
+	void SetDiffuseTexture(const std::string& textureFilename)
+	{
+		HRESULT hr = LoadTextureFromFile(m_dxdevice, textureFilename.c_str(), &m_diffuseTexture);
+		if (FAILED(hr)) {
+			std::cerr << "ERROR: Failed to load texture: " << textureFilename << std::endl;
+		}
+		else {
+			std::cout << "Successfully loaded texture: " << textureFilename << std::endl;
+		}
+
+
+	}
+
 
 	/**
 	 * @brief Abstract render method: must be implemented by derived classes

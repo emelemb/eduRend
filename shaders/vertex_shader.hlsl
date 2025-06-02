@@ -1,11 +1,9 @@
 cbuffer TransformationBuffer : register(b0)
 {
-
     matrix ModelToWorldMatrix;
     matrix WorldToViewMatrix;
     matrix ProjectionMatrix;
 };
-
 
 struct VSIn
 {
@@ -23,8 +21,7 @@ struct PSIn
     float2 TexCoord : TEX;
     float3 WorldPos : POSITION_WORLD;
     float3 NormalPos : NORMAL_WORLD;
-    float3 TangentWorld : TANGENT;
-    float3 BinormalWorld : BINORMAL;
+
 };
 
 //-----------------------------------------------------------------------------------------
@@ -33,12 +30,7 @@ struct PSIn
 
 PSIn VS_main(VSIn input)
 {
-    int texScale = 1;
     PSIn output = (PSIn) 0;
-    output.WorldPos = mul((float3x3) ModelToWorldMatrix, float4(input.Pos, 1.0f).xyz);
-    output.NormalPos = mul((float3x3) ModelToWorldMatrix, input.Normal);
-
-
 
     // Model->View transformation
     matrix MV = mul(WorldToViewMatrix, ModelToWorldMatrix);
@@ -50,12 +42,7 @@ PSIn VS_main(VSIn input)
     // Perform transformations and send to output
     output.Pos = mul(MVP, float4(input.Pos, 1));
     output.Normal = normalize(mul(ModelToWorldMatrix, float4(input.Normal, 0)).xyz);
-    output.TexCoord = input.TexCoord * texScale;
-
-    // Perform TBN and send output
-    output.TangentWorld = mul(input.Tangent, (float3x3) ModelToWorldMatrix);
-    output.BinormalWorld = mul(input.Binormal, (float3x3) ModelToWorldMatrix);
-    output.NormalPos = mul(input.Normal, (float3x3) ModelToWorldMatrix);
+    output.TexCoord = input.TexCoord;
 
     return output;
 }
