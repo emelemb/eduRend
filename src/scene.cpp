@@ -166,6 +166,7 @@ void OurTestScene::Render()
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
 	m_dxdevice_context->PSSetConstantBuffers(0,1,&m_cameraAndLightBuffer);
 
+	m_dxdevice_context->PSSetSamplers(0, 1, &samplerState);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
