@@ -34,6 +34,8 @@ OurTestScene::OurTestScene(
 	InitTransformationBuffer();
 	InitCameraAndLightBuffer();
 	// + init other CBuffers
+
+	SetSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 }
 
 //
@@ -264,4 +266,14 @@ void OurTestScene::UpdateTransformationBuffer(
 	matrixBuffer->WorldToViewMatrix = WorldToViewMatrix;
 	matrixBuffer->ProjectionMatrix = ProjectionMatrix;
 	m_dxdevice_context->Unmap(m_transformation_buffer, 0);
+}
+
+void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode)
+{
+	D3D11_SAMPLER_DESC samplerDESC =
+	{
+		filter, textureAddressMode, textureAddressMode, textureAddressMode,
+		0.0f, 16, D3D11_COMPARISON_NEVER, {1.0f, 1.0f, 1.0f, 10.0f}, -FLT_MAX , FLT_MAX,
+	};
+	m_dxdevice->CreateSamplerState(&samplerDESC, &samplerState);
 }

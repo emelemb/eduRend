@@ -54,12 +54,15 @@ public:
 		HRESULT hr = m_dxdevice->CreateBuffer(&materialBufferDesc, nullptr, &m_material_buffer);
 		ASSERT(SUCCEEDED(hr));
 	}
+	
 
 	/**
 	 * @brief Abstract render method: must be implemented by derived classes
 	*/
 	virtual void Render() const = 0;
 	void SetMaterial(const Material& m_material) { material = m_material; };
+
+
 
 	/**
 	 * @brief Destructor.

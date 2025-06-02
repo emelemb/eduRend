@@ -206,6 +206,8 @@ CubeModel::CubeModel(
 	SETNAME(m_index_buffer, "IndexBuffer");
 
 	m_number_of_indices = (unsigned int)indices.size();
+
+	HRESULT hr = LoadTextureFromFile(m_dxdevice, m_dxdevice_context, "assets/textures/yroadcrossing.png", &material.DiffuseTexture);
 }
 
 

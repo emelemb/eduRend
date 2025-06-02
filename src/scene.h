@@ -86,6 +86,7 @@ class OurTestScene : public Scene
 	//
 	//
 	Camera* m_camera;
+	ID3D11SamplerState* samplerState;
 
 	Model* m_quad;
 	Model* m_sponza;
@@ -125,6 +126,8 @@ class OurTestScene : public Scene
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
 	void UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec3f& light_pos);
+
+	void SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode);
 
 public:
 	/**

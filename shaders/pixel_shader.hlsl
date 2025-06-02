@@ -1,5 +1,5 @@
 
-Texture2D texDiffuse : register(t0);
+Texture2D textureDiffuse : register(t0);
 
 //cbuffer CameraAndLightBuffer : register(b1)
 //{
@@ -21,6 +21,8 @@ cbuffer MaterialBuffer : register(b1)
     float4 SpecularColor;
 };
 
+SamplerState textureSampler : register(s0);
+
 
 struct PSIn
 {
@@ -41,13 +43,19 @@ float4 PS_main(PSIn input) : SV_Target
     float3 L = normalize(LightPos.xyz - input.WorldPos);
     float3 V = normalize(CameraPos.xyz - input.WorldPos);
     float3 R = reflect(-L, N);
-
+    
     float3 ambientTerm = AmbientColor.xyz;
     float diff = max(dot(L, N), 0.0f);
     float3 diffuseTerm = DiffuseColor.xyz * diff;
     float spec = pow(max(dot(R, V), 0.0f), SpecularColor.a);
     float3 specularTerm = SpecularColor.xyz * spec;
+    
+    float4 diffuseTexture = textureDiffuse.Sample(textureSampler, input.TexCoord);
+    float4 textureColor;
 
     float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
-    return float4(finalColor, 1.0f);
+   // return float4(finalColor, 1.0f);
+    return float4(diffuseTexture);
+    
+    
 }
