@@ -61,6 +61,7 @@ public:
     */
     linalg::mat4f ProjectionMatrix() const noexcept;
     const linalg::vec3f& GetPosition() const noexcept;
+    linalg::vec3f& GetCameraPos();
 
 private:
     // Aperture attributes

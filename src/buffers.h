@@ -17,9 +17,16 @@ struct TransformationBuffer
 	linalg::mat4f ProjectionMatrix; //!< Matrix for converting from view space to clip cpace.
 };
 
-struct CameraAndLightBuffer
+
+struct LightCameraBuffer
 {
-	linalg::vec4f cameraPos; 
-	linalg::vec4f lightPos;
-	linalg::vec4f lightCol;
+    vec4f cameraPos;
+    vec4f lightPos;
+};
+
+struct MaterialBuffer
+{
+    vec4f ambientColor;  
+    vec4f diffuseColor;
+    vec4f specularColor;
 };

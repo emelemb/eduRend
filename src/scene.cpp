@@ -53,12 +53,24 @@ void OurTestScene::Init()
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
+	m_sphere = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_anotherCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_moon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_verticalMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
+
+	sphere_material.AmbientColour = { 0.0f, 0.0f, 1.0f };
+	sphere_material.DiffuseColour = { 0.0f, 0.0f, 0.0f };
+	sphere_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+
+	verticalMoon_material.AmbientColour = { 1.0f, 0.0f, 0.0f };
+	verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
+	verticalMoon_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+
+	m_cube->SetMaterial(sphere_material);
+	m_anotherCube->SetMaterial(verticalMoon_material);
 }
 
 //
@@ -103,8 +115,8 @@ void OurTestScene::Update(
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
-	m_verticalCube_transform = mat4f::translation(0, 1, 0) *			// No translation
-		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
+	m_verticalCube_transform = mat4f::translation(0.0f, 5.0f, 5.0f) *			// No translation
+		mat4f::rotation(0.1, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(0.1, 0.1, 0.1);
 
 	m_verticalMoon_transform = m_verticalCube_transform *
@@ -139,12 +151,13 @@ void OurTestScene::Update(
 		m_fps_cooldown = 2.0;
 	}
 
-	UpdateCameraAndLightBuffer();
+	UpdateCameraAndLightBuffer(vec3f(0.0f, 5.0f, 5.0f), vec3f(m_camera->GetCameraPos()));
 }
 
 //
 // Called every frame, after update
 //
+
 void OurTestScene::Render()
 {
 	// Bind transformation_buffer to slot b0 of the VS
@@ -169,8 +182,8 @@ void OurTestScene::Render()
 	//UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);sds
 	//m_moon->Render();
 
-	//UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
-	//m_verticalMoon->Render();
+	UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
+	m_verticalMoon->Render();
 
 	//UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
 	//m_verticalSmallMoon->Render();s
@@ -206,7 +219,7 @@ void::OurTestScene::InitCameraAndLightBuffer()
 	HRESULT hr;
 	D3D11_BUFFER_DESC cameraLightBufferDESC = { 0 };
 	cameraLightBufferDESC.Usage = D3D11_USAGE_DYNAMIC;
-	cameraLightBufferDESC.ByteWidth = sizeof(CameraAndLightBuffer);
+	cameraLightBufferDESC.ByteWidth = sizeof(LightCameraBuffer);
 	cameraLightBufferDESC.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cameraLightBufferDESC.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cameraLightBufferDESC.MiscFlags = 0;
@@ -214,15 +227,13 @@ void::OurTestScene::InitCameraAndLightBuffer()
 	ASSERT(hr = m_dxdevice->CreateBuffer(&cameraLightBufferDESC, nullptr, &m_cameraAndLightBuffer));
 }
 
-void OurTestScene::UpdateCameraAndLightBuffer()
+void OurTestScene::UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec3f& light_pos)
 {
 	D3D11_MAPPED_SUBRESOURCE resource;
 	m_dxdevice_context->Map(m_cameraAndLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
-	CameraAndLightBuffer* cameraANDlight= (CameraAndLightBuffer*)resource.pData;
-	vec3f cameraPos = m_camera->GetPosition();
-	cameraANDlight->cameraPos = vec4f(cameraPos.x, cameraPos.y, cameraPos.z, 1.0f);
-	cameraANDlight->lightPos = vec4f(10.0f * cos(m_angle), 5.0f, 10.0f * sin(m_angle), 1.0f);
-	cameraANDlight->lightCol = vec4f(1.0f, 1.0f, 1.0f, 1.0f);
+	LightCameraBuffer* CameraAndLightBuffer = (LightCameraBuffer*)resource.pData;
+	CameraAndLightBuffer->cameraPos = vec4f(camera_pos, 1.0f);
+	CameraAndLightBuffer->lightPos = vec4f(vec4f(10.0f * cos(m_angle +10), 4.0f, 10.0f * sin(m_angle+10), 1.0f));
 	m_dxdevice_context->Unmap(m_cameraAndLightBuffer, 0);
 
 }

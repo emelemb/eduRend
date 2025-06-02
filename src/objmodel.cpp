@@ -88,6 +88,21 @@ OBJModel::OBJModel(
 
 void OBJModel::Render() const
 {
+	//Update
+	MaterialBuffer materialBufferData;
+	materialBufferData.ambientColor = vec4f(material.AmbientColour, 1.0f);
+	materialBufferData.diffuseColor = vec4f(material.DiffuseColour, 1.0f);
+	materialBufferData.specularColor = vec4f(material.SpecularColour, 1.0f);
+
+	// Map and copy data to GPU buffer
+	D3D11_MAPPED_SUBRESOURCE mapped;
+	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	memcpy(mapped.pData, &materialBufferData, sizeof(MaterialBuffer));
+	m_dxdevice_context->Unmap(m_material_buffer, 0);
+
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
+
+
 	// Bind vertex buffer
 	const UINT32 stride = sizeof(Vertex);
 	const UINT32 offset = 0;

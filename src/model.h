@@ -15,6 +15,7 @@
 #include "Drawcall.h"
 #include "OBJLoader.h"
 #include "Texture.h"
+#include "buffers.h"
 
 using namespace linalg;
 
@@ -31,6 +32,9 @@ protected:
 	// Pointers to the class' vertex & index arrays
 	ID3D11Buffer* m_vertex_buffer = nullptr; //!< Pointer to gpu side vertex buffer
 	ID3D11Buffer* m_index_buffer = nullptr; //!< Pointer to gpu side index buffer
+	ID3D11Buffer* m_material_buffer = nullptr;
+
+	Material material;
 
 public:
 
@@ -40,12 +44,22 @@ public:
 	 * @param dxdevice_context ID3D11DeviceContext to be used in the model.
 	*/
 	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) 
-		:	m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context) { }
+		:	m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context) 
+	{ 
+		D3D11_BUFFER_DESC materialBufferDesc = {};
+		materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		materialBufferDesc.ByteWidth = sizeof(MaterialBuffer);
+		materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		HRESULT hr = m_dxdevice->CreateBuffer(&materialBufferDesc, nullptr, &m_material_buffer);
+		ASSERT(SUCCEEDED(hr));
+	}
 
 	/**
 	 * @brief Abstract render method: must be implemented by derived classes
 	*/
 	virtual void Render() const = 0;
+	void SetMaterial(const Material& m_material) { material = m_material; };
 
 	/**
 	 * @brief Destructor.

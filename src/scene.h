@@ -96,6 +96,8 @@ class OurTestScene : public Scene
 	Model* m_verticalSmallMoon;
 	Model* m_verticalCube;
 
+	Model* m_sphere;
+
 	mat4f m_sponza_transform;
 	mat4f m_quad_transform;
 	mat4f m_cube_transform;
@@ -115,11 +117,14 @@ class OurTestScene : public Scene
 	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
 
+	Material verticalMoon_material;
+	Material sphere_material;
+
 	void InitTransformationBuffer();
 	void InitCameraAndLightBuffer();
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
-	void UpdateCameraAndLightBuffer();
+	void UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec3f& light_pos);
 
 public:
 	/**

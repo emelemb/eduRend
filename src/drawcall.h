@@ -26,7 +26,6 @@ struct Vertex
 	vec3f Position; //!< 3D coordinate of the vertex
 	vec3f Normal; //!< Normal of the vertex
 	vec3f Tangent; //!< Tangent of the vertex
-	vec3f Binormal; //!< Binormal of the vertex
 	vec2f TexCoord; //!< 2D texture coordiante of the vertex
 };
 
@@ -35,9 +34,9 @@ struct Vertex
 */
 struct Material
 {
-	vec3f AmbientColour		= { 0.0f, 0.5f, 0.0f }; //!< Ambient colour component
+	vec3f AmbientColour		= { 1.f, 0.6, 0.0f }; //!< Ambient colour component
 	vec3f DiffuseColour		= { 0.0f, 0.5f, 0.0f }; //!< Diffuse colour component
-	vec3f SpecularColour	= { 1.0f, 1.0f, 1.0f }; //!< Specular colour component
+	vec3f SpecularColour	= { 0.5f, 0.5f, 0.5f }; //!< Specular colour component
     
 	std::string Name; //!< Name of the Material
 
