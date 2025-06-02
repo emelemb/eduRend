@@ -1,4 +1,3 @@
- 
 #include "Scene.h"
 #include "QuadModel.h"
 #include "OBJModel.h"
@@ -30,9 +29,9 @@ OurTestScene::OurTestScene(
 	int window_width,
 	int window_height) :
 	Scene(dxdevice, dxdevice_context, window_width, window_height)
-{ 
+{
 	InitTransformationBuffer();
-	InitCameraAndLightBuffer();
+	InitlightCameraBuffer();
 	// + init other CBuffers
 
 	SetSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
@@ -63,18 +62,22 @@ void OurTestScene::Init()
 	m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 
-	sphere_material.AmbientColour = { 0.0f, 0.0f, 1.0f };
-	sphere_material.DiffuseColour = { 0.0f, 0.0f, 0.0f };
+	sphere_material.AmbientColour = { 0.0f, 0.4f, 0.0f };
+	sphere_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
 	sphere_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
 
-	verticalMoon_material.AmbientColour = { 1.0f, 0.0f, 0.0f };
+	verticalMoon_material.AmbientColour = { 0.6f, 0.0f, 0.0f };
 	verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
 	verticalMoon_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
 
-	m_cube->SetMaterial(sphere_material);
-	m_anotherCube->SetMaterial(verticalMoon_material);
+	m_sphere->SetMaterial(sphere_material);
+	m_verticalMoon->SetMaterial(verticalMoon_material);
 
+	m_quad->SetDiffuseTexture("assets/textures/yroadcrossing.png");
+	m_verticalMoon->SetDiffuseTexture("assets/textures/yroadcrossing.png");
 	m_cube->SetDiffuseTexture("assets/textures/yroadcrossing.png");
+
+	m_cube->SetNormalTexture("assets/textures/0001CD_normal.jpg");
 }
 
 //
@@ -99,6 +102,10 @@ void OurTestScene::Update(
 	long mousedy = input_handler.GetMouseDeltaY();
 	m_camera->rotation(mousedx, mousedy);
 
+	// Thiti
+	camera_pos_world = m_camera->GetCameraPos();
+	light_pos = vec4f(0.0f, 300, 0.0f, 1.0f);
+
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
 	// but the T*R*S order is most common; i.e. scale, then rotate, and then translate.
@@ -115,12 +122,16 @@ void OurTestScene::Update(
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
 		mat4f::scaling(0.05f);			 // The scene is quite large so scale it down to 5%
 
+	m_sphere_transform = mat4f::translation(5, 0, 5) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(1.5, 1.5, 1.5);
+
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
-	m_verticalCube_transform = mat4f::translation(0.0f, 5.0f, 5.0f) *			// No translation
-		mat4f::rotation(0.1, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
+	m_verticalCube_transform = mat4f::translation(0, 1, 0) *			// No translation
+		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(0.1, 0.1, 0.1);
 
 	m_verticalMoon_transform = m_verticalCube_transform *
@@ -129,14 +140,14 @@ void OurTestScene::Update(
 		mat4f::scaling(8, 8, 8);
 
 	m_verticalSmallMoon_transform = m_verticalMoon_transform *
-		mat4f::translation(0, 3, 0)*
+		mat4f::translation(0, 3, 0) *
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
 		mat4f::scaling(0.5, 0.5, 0.5);
 
-    m_anotherCube_transfrom = m_cube_transform *
+	m_anotherCube_transfrom = m_cube_transform *
 		mat4f::translation(3, 0.5, 0) *
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
-		mat4f::scaling( 0.5, 0.5, 0.5);
+		mat4f::scaling(0.5, 0.5, 0.5);
 
 	m_moon_transform = m_anotherCube_transfrom *
 		mat4f::translation(5, 0.2, 0) *
@@ -151,31 +162,28 @@ void OurTestScene::Update(
 	if (m_fps_cooldown < 0.0)
 	{
 		std::cout << "fps " << (int)(1.0f / dt) << std::endl;
-//		printf("fps %i\n", (int)(1.0f / dt));
+		//		printf("fps %i\n", (int)(1.0f / dt));
 		m_fps_cooldown = 2.0;
 	}
-
-	UpdateCameraAndLightBuffer(vec3f(0.0f, 5.0f, 5.0f), vec3f(m_camera->GetCameraPos()));
 }
 
 //
 // Called every frame, after update
 //
-
 void OurTestScene::Render()
 {
 	// Bind transformation_buffer to slot b0 of the VS
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
-	m_dxdevice_context->PSSetConstantBuffers(0,1,&m_cameraAndLightBuffer);
+	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_lightCamera_buffer);
 
-	m_dxdevice_context->PSSetSamplers(0, 1, &samplerState);
+	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
 	// Load matrices + the Quad's transformation to the device and render it
-	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
+	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	//m_quad->Render();
 
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
@@ -184,18 +192,23 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();
 
-	//UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);sds
-	//m_moon->Render();
+	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
+	m_moon->Render();
 
 	UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
 	m_verticalMoon->Render();
 
-	//UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
-	//m_verticalSmallMoon->Render();s
+	UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
+	m_verticalSmallMoon->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
+
+	UpdateTransformationBuffer(m_sphere_transform, m_view_matrix, m_projection_matrix);
+	m_sphere->Render();
+
+	UpdateLightCameraBuffer(vec3f(0.0f, 0.0f, 5.0f), vec3f(m_camera->GetCameraPos()));
 }
 
 void OurTestScene::Release()
@@ -205,7 +218,6 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_camera);
 
 	SAFE_RELEASE(m_transformation_buffer);
-	SAFE_RELEASE(m_cameraAndLightBuffer);
 	// + release other CBuffers
 }
 
@@ -217,30 +229,6 @@ void OurTestScene::OnWindowResized(
 		m_camera->SetAspect(float(new_width) / new_height);
 
 	Scene::OnWindowResized(new_width, new_height);
-}
-
-void::OurTestScene::InitCameraAndLightBuffer()
-{
-	HRESULT hr;
-	D3D11_BUFFER_DESC cameraLightBufferDESC = { 0 };
-	cameraLightBufferDESC.Usage = D3D11_USAGE_DYNAMIC;
-	cameraLightBufferDESC.ByteWidth = sizeof(LightCameraBuffer);
-	cameraLightBufferDESC.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cameraLightBufferDESC.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cameraLightBufferDESC.MiscFlags = 0;
-	cameraLightBufferDESC.StructureByteStride = 0;
-	ASSERT(hr = m_dxdevice->CreateBuffer(&cameraLightBufferDESC, nullptr, &m_cameraAndLightBuffer));
-}
-
-void OurTestScene::UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec3f& light_pos)
-{
-	D3D11_MAPPED_SUBRESOURCE resource;
-	m_dxdevice_context->Map(m_cameraAndLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
-	LightCameraBuffer* CameraAndLightBuffer = (LightCameraBuffer*)resource.pData;
-	CameraAndLightBuffer->cameraPos = vec4f(camera_pos, 1.0f);
-	CameraAndLightBuffer->lightPos = vec4f(vec4f(10.0f * cos(m_angle +10), 4.0f, 10.0f * sin(m_angle+10), 1.0f));
-	m_dxdevice_context->Unmap(m_cameraAndLightBuffer, 0);
-
 }
 
 void OurTestScene::InitTransformationBuffer()
@@ -271,12 +259,46 @@ void OurTestScene::UpdateTransformationBuffer(
 	m_dxdevice_context->Unmap(m_transformation_buffer, 0);
 }
 
+void OurTestScene::InitlightCameraBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC lightCameraBufferDesc = { 0 };
+	lightCameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightCameraBufferDesc.ByteWidth = sizeof(LightCameraBuffer);
+	lightCameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightCameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightCameraBufferDesc.MiscFlags = 0;
+	lightCameraBufferDesc.StructureByteStride = 0;
+	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBufferDesc, nullptr, &m_lightCamera_buffer));
+
+}
+
+void OurTestScene::UpdateLightCameraBuffer(const vec3f& camera_pos, const vec3f& light_pos)
+{
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_lightCamera_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	LightCameraBuffer* lightCamDataBuffer = (LightCameraBuffer*)resource.pData;
+	lightCamDataBuffer->cameraPos = vec4f(camera_pos, 1.0f);
+	lightCamDataBuffer->lightPos = vec4f(light_pos, 1.0f);
+	m_dxdevice_context->Unmap(m_lightCamera_buffer, 0);
+}
+
 void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode)
 {
-	D3D11_SAMPLER_DESC samplerDESC =
+	D3D11_SAMPLER_DESC samplerDesc =
 	{
-		filter, textureAddressMode, textureAddressMode, textureAddressMode,
-		0.0f, 16, D3D11_COMPARISON_NEVER, {1.0f, 1.0f, 1.0f, 1.0f}, -FLT_MAX , FLT_MAX,
+		filter,
+		textureAddressMode,
+		textureAddressMode,
+		textureAddressMode,
+		0.0f,
+		16,
+		D3D11_COMPARISON_NEVER,
+		{1.0f, 1.0f, 1.0f, 1.0f},
+		-FLT_MAX,
+		FLT_MAX,
+
 	};
-	m_dxdevice->CreateSamplerState(&samplerDESC, &samplerState);
+	m_dxdevice->CreateSamplerState(&samplerDesc, &sampler);
+
 }

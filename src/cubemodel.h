@@ -3,24 +3,26 @@
 
 class CubeModel : public Model
 {
-	unsigned m_number_of_indices = 0;
+private:
+    //struct  Vertex
+    //{
+    //    float x, y, z; // Pos
+    //    float nx, ny, nz; // Normal vec
+    //    float u, v; // Texture coord
+    //};
 
-public:
-	/**
-	 * @brief Create a model of a quad.
-	 * @param dxdevice Valid ID3D11Device.
-	 * @param dxdevice_context Valid ID3D11DeviceContext.
-	*/
-	CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context);
+    unsigned m_number_of_indices = 0;
+    //std::vector<Vertex> m_vertices;
+/*    std::vector<uint32_t> m_indices;
+    std::vector<Material> m_materials*/;
 
-	/**
-	 * @brief Render the model.
-	*/
-	virtual void Render() const;
 
-	/**
-	 *@brief Destructor.
-	*/
-	~CubeModel() { }
+    float m_material_Shininess = 1.0f;
+
+
+public: CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context);
+
+      virtual void Render() const override;
+      void SetShininess(float shininess);
+      void SetTexture(const std::string& textureFilename);
 };
-

@@ -46,23 +46,23 @@ public:
 	 * @param[in] input_handler Reference to the current InputHandler.
 	*/
 	virtual void Update(float delta_time, const InputHandler& input_handler) = 0;
-	
+
 	/**
 	 * @brief Render the scene.
 	*/
 	virtual void Render() = 0;
-	
+
 
 	/**
 	 * @brief Method called whenever the Window has changed size.
 	 * @param[in] window_width New window width.
 	 * @param[in] window_height New window height.
 	*/
-	virtual void OnWindowResized(int window_width,	int window_height);
+	virtual void OnWindowResized(int window_width, int window_height);
 
 protected:
-	ID3D11Device*			m_dxdevice; //!< Graphics device, use for creating resources.
-	ID3D11DeviceContext*	m_dxdevice_context; //!< Graphics context, use for binding resources and draw commands.
+	ID3D11Device* m_dxdevice; //!< Graphics device, use for creating resources.
+	ID3D11DeviceContext* m_dxdevice_context; //!< Graphics context, use for binding resources and draw commands.
 	int						m_window_width; //!< Current width of the window.
 	int						m_window_height; //!< Current height of the window.
 };
@@ -78,15 +78,14 @@ class OurTestScene : public Scene
 
 	// CBuffer for transformation matrices
 	ID3D11Buffer* m_transformation_buffer = nullptr;
-	ID3D11Buffer* m_cameraAndLightBuffer = nullptr;
 	// + other CBuffers
+	ID3D11Buffer* m_lightCamera_buffer = nullptr;
 
 	//
 	// Scene content
 	//
-	//
 	Camera* m_camera;
-	ID3D11SamplerState* samplerState;
+	ID3D11SamplerState* sampler;
 
 	Model* m_quad;
 	Model* m_sponza;
@@ -108,6 +107,7 @@ class OurTestScene : public Scene
 	mat4f m_verticalSmallMoon_transform;
 	mat4f m_verticalCube_transform;
 
+	mat4f m_sphere_transform;
 
 	mat4f m_view_matrix;
 	mat4f m_projection_matrix;
@@ -118,14 +118,20 @@ class OurTestScene : public Scene
 	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
 
-	Material verticalMoon_material;
+	vec3f camera_pos_world;
+	vec4f camera_pos;
+	vec4f light_pos;
+
 	Material sphere_material;
+	Material verticalMoon_material;
 
 	void InitTransformationBuffer();
-	void InitCameraAndLightBuffer();
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
-	void UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec3f& light_pos);
+
+	void InitlightCameraBuffer();
+
+	void UpdateLightCameraBuffer(const vec3f& camera_pos, const vec3f& light_pos);
 
 	void SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode);
 
@@ -137,7 +143,7 @@ public:
 	 * @param window_width Current window width.
 	 * @param window_height Current window height.
 	*/
-	OurTestScene(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context,	int window_width, int window_height);
+	OurTestScene(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context, int window_width, int window_height);
 
 	/**
 	 * @brief Initializes all resources held by the scene.

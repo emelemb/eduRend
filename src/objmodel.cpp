@@ -100,9 +100,6 @@ void OBJModel::Render() const
 	memcpy(mapped.pData, &materialBufferData, sizeof(MaterialBuffer));
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 
-	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
-
-
 	// Bind vertex buffer
 	const UINT32 stride = sizeof(Vertex);
 	const UINT32 offset = 0;
@@ -110,6 +107,10 @@ void OBJModel::Render() const
 
 	// Bind index buffer
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Bind material_buffer to slot b1 of the PS
+	// Rend 2
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)
@@ -134,5 +135,4 @@ OBJModel::~OBJModel()
 
 		// Release other used textures ...
 	}
-	SAFE_RELEASE(m_material_buffer);
 }

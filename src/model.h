@@ -35,7 +35,6 @@ protected:
 	ID3D11Buffer* m_material_buffer = nullptr;
 
 	Material material;
-
 	Texture m_diffuseTexture;
 
 public:
@@ -45,9 +44,9 @@ public:
 	 * @param dxdevice ID3D11Device to be used in the model.
 	 * @param dxdevice_context ID3D11DeviceContext to be used in the model.
 	*/
-	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) 
-		:	m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context) 
-	{ 
+	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context)
+		: m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context)
+	{
 		D3D11_BUFFER_DESC materialBufferDesc = {};
 		materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		materialBufferDesc.ByteWidth = sizeof(MaterialBuffer);
@@ -56,7 +55,13 @@ public:
 		HRESULT hr = m_dxdevice->CreateBuffer(&materialBufferDesc, nullptr, &m_material_buffer);
 		ASSERT(SUCCEEDED(hr));
 	}
-	
+
+	/**
+	 * @brief Abstract render method: must be implemented by derived classes
+	*/
+	virtual void Render() const = 0;
+	void SetMaterial(const Material& m_material) { material = m_material; };
+
 	void SetDiffuseTexture(const std::string& textureFilename)
 	{
 		HRESULT hr = LoadTextureFromFile(m_dxdevice, textureFilename.c_str(), &m_diffuseTexture);
@@ -70,21 +75,25 @@ public:
 
 	}
 
+	void SetNormalTexture(const std::string& textureFilename)
+	{
+		HRESULT hr = LoadTextureFromFile(m_dxdevice, textureFilename.c_str(), &m_diffuseTexture);
+		if (FAILED(hr)) {
+			std::cerr << "ERROR: Failed to load texture: " << textureFilename << std::endl;
+		}
+		else {
+			std::cout << "Successfully loaded texture: " << textureFilename << std::endl;
+		}
 
-	/**
-	 * @brief Abstract render method: must be implemented by derived classes
-	*/
-	virtual void Render() const = 0;
-	void SetMaterial(const Material& m_material) { material = m_material; };
 
-
+	}
 
 	/**
 	 * @brief Destructor.
 	 * @details Releases the vertex and index buffers of the Model.
 	*/
 	virtual ~Model()
-	{ 
+	{
 		SAFE_RELEASE(m_vertex_buffer);
 		SAFE_RELEASE(m_index_buffer);
 	}
