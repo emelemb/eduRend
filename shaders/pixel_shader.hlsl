@@ -40,32 +40,27 @@ float4 PS_main(PSIn input) : SV_Target
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
     //return float4(input.TexCoord, 0, 1);
 	
-    // Thiti rend 3
+  
     float3 N = normalize(input.Normal);
     float3 L = normalize(LightPos.xyz - input.WorldPos);
     float3 V = normalize(CameraPos.xyz - input.WorldPos);
     float3 R = reflect(-L, N);
     
     float2 scaleUV = input.TexCoord * 2.5f; // Make texture not alignned 
-    float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
+    float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     //float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     
     float3 ambientTerm = AmbientColor.xyz;
     float diff = max(dot(L, N), 0.0f);
-    float3 diffuseTerm = DiffuseColor.xyz * diff;
+    float3 diffuseTerm = (DiffuseColor.xyz * diff) * diffuseText.rgb;
     float spec = pow(max(dot(R, V), 0.0f), SpecularColor.a);
     float3 specularTerm = SpecularColor.xyz * spec;
     
-    //float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
-    //return float4(finalColor, 1.0f);
+    float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
+    return float4(finalColor, 1.0f);
     
-    //float3 finalColor = (ambientTerm + diffuseTerm) * diffuseText.rgb + specularTerm;
-    
-    //return float4(finalColor, 1.0f);
-    
-    
-    //float4 texColor = texDiffuse.Sample(textureSampler, input.TexCoord);
-    return diffuseText;
+
+    //return diffuseText;
     
     //// Rend 4
     //float3x3 TBN = float3x3(normalize(input.Tangent), normalize(input.Binormal), normalize(input.Normal));

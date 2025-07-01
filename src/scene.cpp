@@ -34,7 +34,7 @@ OurTestScene::OurTestScene(
 	InitlightCameraBuffer();
 	// + init other CBuffers
 
-	SetSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
+	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP);
 }
 
 //
