@@ -63,11 +63,11 @@ void OurTestScene::Init()
 
 	sphere_material.AmbientColour = { 0.0f, 0.0f, 1.0f };
 	sphere_material.DiffuseColour = { 0.0f, 0.0f, 0.0f };
-	sphere_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+	sphere_material.SpecularColour = { 1.0f, 0.0f, 0.0f };
 
 	verticalMoon_material.AmbientColour = { 1.0f, 0.0f, 0.0f };
 	verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
-	verticalMoon_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+	verticalMoon_material.SpecularColour = { 0.0f, 0.0f, 1.0f };
 
 	m_cube->SetMaterial(sphere_material);
 	m_anotherCube->SetMaterial(verticalMoon_material);
@@ -179,14 +179,14 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();
 
-	//UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);sds
-	//m_moon->Render();
+	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
+	m_moon->Render();
 
 	UpdateTransformationBuffer(m_verticalMoon_transform, m_view_matrix, m_projection_matrix);
 	m_verticalMoon->Render();
 
-	//UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
-	//m_verticalSmallMoon->Render();s
+	UpdateTransformationBuffer(m_verticalSmallMoon_transform, m_view_matrix, m_projection_matrix);
+	m_verticalSmallMoon->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
