@@ -66,16 +66,17 @@ void OurTestScene::Init()
 	sphere_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
 	sphere_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
 
-	verticalMoon_material.AmbientColour = { 0.6f, 0.0f, 0.0f };
-	verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
-	verticalMoon_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+	//verticalMoon_material.AmbientColour = { 0.6f, 0.0f, 0.0f };
+	//verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
+	//verticalMoon_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
 
 	m_sphere->SetMaterial(sphere_material);
 	m_verticalMoon->SetMaterial(verticalMoon_material);
 
 	m_quad->SetDiffuseTexture("assets/textures/yroadcrossing.png");
 	m_verticalMoon->SetDiffuseTexture("assets/textures/yroadcrossing.png");
-	m_cube->SetDiffuseTexture("assets/textures/yroadcrossing.png");
+
+	m_cube->SetDiffuseTexture("assets/textures/0001CD_diffuse.jpg");
 
 	m_cube->SetNormalTexture("assets/textures/0001CD_normal.jpg");
 }
@@ -127,7 +128,7 @@ void OurTestScene::Update(
 		mat4f::scaling(1.5, 1.5, 1.5);
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
 	m_verticalCube_transform = mat4f::translation(0, 1, 0) *			// No translation

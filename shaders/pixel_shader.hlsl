@@ -40,6 +40,12 @@ float4 PS_main(PSIn input) : SV_Target
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
     //return float4(input.TexCoord, 0, 1);
 	
+    float3x3 TBN = float3x3(normalize(input.Tangent), normalize(input.Binormal), normalize(input.Normal));
+    
+    float3 normalTS = texNormal.Sample(textureSampler, input.TexCoord).rgb;
+    normalTS = normalize(normalTS * 2.0f - 1.0f);
+    
+
   
     float3 N = normalize(input.Normal);
     float3 L = normalize(LightPos.xyz - input.WorldPos);
