@@ -176,7 +176,7 @@ int WINAPI wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE, _In_ LPWSTR, _I
 		
 		Update(deltaTime);
 		Render(deltaTime);
-
+		
 		prevTimeStamp = currTimeStamp;
 	}
 
