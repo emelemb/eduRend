@@ -34,11 +34,11 @@ struct Vertex
 */
 struct Material
 {
-	vec3f AmbientColour		= { 0.5f, 0.5, 0.5f }; //!< Ambient colour component
-	vec3f DiffuseColour		= { 0.1f, 0.1f, 0.1f }; //!< Diffuse colour component
-	vec3f SpecularColour	= { 0.5f, 0.5f, 0.5f }; //!< Specular colour component
+	vec3f AmbientColour		= { 0.5f, 0.5, 0.5f }; //Ambient colour component
+	vec3f DiffuseColour		= { 0.1f, 0.1f, 0.1f }; // Diffuse colour component
+	vec3f SpecularColour	= { 0.5f, 0.5f, 0.5f }; // Specular colour component
     
-	std::string Name; //!< Name of the Material
+	std::string Name; //Name of the Material
 
 	// File paths to textures
 	std::string DiffuseTextureFilename; //!< Diffuse texture path
@@ -47,8 +47,8 @@ struct Material
 	// + more texture types (extend OBJLoader::LoadMaterials if needed)
 
 	// Device textures
-	Texture DiffuseTexture; //!< Diffuse Texture
-	// + other texture types
+	Texture DiffuseTexture; 
+
 };
 
 /**
