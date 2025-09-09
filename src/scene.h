@@ -80,6 +80,7 @@ class OurTestScene : public Scene
 	ID3D11Buffer* m_transformation_buffer = nullptr;
 	// + other CBuffers
 	ID3D11Buffer* m_lightCamera_buffer = nullptr;
+	ID3D11Buffer* m_material_buffer = nullptr;
 
 	//
 	// Scene content
@@ -129,9 +130,16 @@ class OurTestScene : public Scene
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
 
+	void InitMaterialBuffer();
+
+	 void UpdateMaterialBuffer(Material material);
+
+	 void UpdateMaterialBuffer(Material material, float shininess);
+
+
 	void InitlightCameraBuffer();
 
-	void UpdateLightCameraBuffer(const vec3f& camera_pos, const vec3f& light_pos);
+	void UpdateLightCameraBuffer(vec4f camera_pos, vec4f light_pos);
 
 	void SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode);
 

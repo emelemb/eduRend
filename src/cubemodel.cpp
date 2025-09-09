@@ -10,6 +10,7 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 
 	// Test for Rend 4
 	// Front face (normal: 0,0,1)
+#pragma region vertices
 	v0.Position = { -0.5f, -0.5f, 0.5f };
 	v0.Normal = { 0, 0, 1 };
 	v0.TexCoord = { 0, 0 };
@@ -27,7 +28,7 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	v2.TexCoord = { 1, 1 };
 	v2.Tangent = { 1, 0, 0 };
 	v2.Binormal = { 0, 1, 0 };
-
+	  
 	v3.Position = { -0.5f, 0.5f, 0.5f };
 	v3.Normal = { 0, 0, 1 };
 	v3.TexCoord = { 0, 1 };
@@ -183,7 +184,7 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	vertices.push_back(v21);
 	vertices.push_back(v22);
 	vertices.push_back(v23);
-
+#pragma endregion
 	for (size_t i = 0; i < 6; i++)
 	{
 		int temp = i * 4;
@@ -226,28 +227,29 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	dxdevice->CreateBuffer(&indexbufferDesc, &indexData, &m_index_buffer);
 	SETNAME(m_index_buffer, "IndexBuffer");
 
+	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_diffuse.jpg", & material.DiffuseTexture);
+	if (FAILED(hr)) {
+		std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	}
+	else {
+		std::cout << "Successfully loaded texture:" << std::endl;
+	}
+
+	hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_normal.jpg", &material.NormalTexture);
+	if (FAILED(hr)) {
+		std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	}
+	else {
+		std::cout << "Successfully loaded texture:" << std::endl;
+	}
+
 	m_number_of_indices = (unsigned int)indices.size();
 }
 
-void CubeModel::SetShininess(float shininess) {
-	m_material_Shininess = shininess;
-}
 
 
 void CubeModel::Render()const
 {
-	//Update
-	MaterialBuffer materialBufferData;
-	materialBufferData.ambientColor = vec4f(material.AmbientColour, 1.0f);
-	materialBufferData.diffuseColor = vec4f(material.DiffuseColour, 1.0f);
-	materialBufferData.specularColor = vec4f(material.SpecularColour, m_material_Shininess);
-
-	// Map and copy data to GPU buffer
-	D3D11_MAPPED_SUBRESOURCE mapped;
-	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-	memcpy(mapped.pData, &materialBufferData, sizeof(MaterialBuffer));
-	m_dxdevice_context->Unmap(m_material_buffer, 0);
-
 	// Bind vertex and index buffers
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0;
@@ -257,12 +259,10 @@ void CubeModel::Render()const
 	// Set primitive topology to triangles
 	m_dxdevice_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Bind material_buffer to slot b1 of the PS
-	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// Diffuse 
-	m_dxdevice_context->PSSetShaderResources(0, 1, &m_diffuseTexture.TextureView);
-
+	m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
+	
 	// Normal
 	m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalTexture.TextureView);
 

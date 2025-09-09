@@ -22,7 +22,6 @@ struct PSIn
     float3 Normal : NORMAL;
     float2 TexCoord : TEX;
     float3 WorldPos : POSITION_WORLD;
-    float3 NormalPos : NORMAL_WORLD;
     float3 TangentWorld : TANGENT;
     float3 BinormalWorld : BINORMAL;
 };
@@ -35,11 +34,9 @@ PSIn VS_main(VSIn input)
 {
    
     //int texScale = 1;   -> sould be moved to pixelShader  
-    PSIn output = (PSIn) 0;
-    output.WorldPos = mul((float3x3) ModelToWorldMatrix, float4(input.Pos, 1.0f).xyz);
-    output.NormalPos = mul((float3x3) ModelToWorldMatrix, input.Normal);
-    
-
+    PSIn output = (PSIn)0;
+    float4 worldPosTemp = mul(ModelToWorldMatrix, float4(input.Pos, 1.0f));
+    output.WorldPos = worldPosTemp.xyz;
     
     // Model->View transformation
     matrix MV = mul(WorldToViewMatrix, ModelToWorldMatrix);
@@ -51,12 +48,9 @@ PSIn VS_main(VSIn input)
     // Perform transformations and send to output
     output.Pos = mul(MVP, float4(input.Pos, 1));
     output.Normal = normalize(mul(ModelToWorldMatrix, float4(input.Normal, 0)).xyz);
-    output.TexCoord = input.TexCoord; // * texScale;
-    
-    // Perform TBN and send output
-    output.TangentWorld = mul(input.Tangent, (float3x3) ModelToWorldMatrix);
-    output.BinormalWorld = mul(input.Binormal, (float3x3) ModelToWorldMatrix);
-    output.NormalPos = mul(input.Normal, (float3x3) ModelToWorldMatrix);
-    
+    output.TexCoord = input.TexCoord; // * texScale; 
+    output.TangentWorld = normalize(mul((float3x3) ModelToWorldMatrix, input.Tangent));
+    output.BinormalWorld = normalize(mul((float3x3) ModelToWorldMatrix, input.Binormal));
+
     return output;
 }

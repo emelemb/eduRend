@@ -34,11 +34,9 @@ protected:
 	ID3D11Buffer* m_index_buffer = nullptr; //!< Pointer to gpu side index buffer
 	ID3D11Buffer* m_material_buffer = nullptr;
 
-	Material material;
-	Texture m_diffuseTexture;
 
 public:
-
+	Material material;
 	/**
 	 * @brief Sets the protected member variables to the input params.
 	 * @param dxdevice ID3D11Device to be used in the model.
@@ -61,32 +59,6 @@ public:
 	*/
 	virtual void Render() const = 0;
 	void SetMaterial(const Material& m_material) { material = m_material; };
-
-	void SetDiffuseTexture(const std::string& textureFilename)
-	{
-		HRESULT hr = LoadTextureFromFile(m_dxdevice, textureFilename.c_str(), &m_diffuseTexture);
-		if (FAILED(hr)) {
-			std::cerr << "ERROR: Failed to load texture: " << textureFilename << std::endl;
-		}
-		else {
-			std::cout << "Successfully loaded texture: " << textureFilename << std::endl;
-		}
-
-
-	}
-
-	void SetNormalTexture(const std::string& textureFilename)
-	{
-		HRESULT hr = LoadTextureFromFile(m_dxdevice, textureFilename.c_str(), &m_diffuseTexture);
-		if (FAILED(hr)) {
-			std::cerr << "ERROR: Failed to load texture: " << textureFilename << std::endl;
-		}
-		else {
-			std::cout << "Successfully loaded texture: " << textureFilename << std::endl;
-		}
-
-
-	}
 
 	/**
 	 * @brief Destructor.
