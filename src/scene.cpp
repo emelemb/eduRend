@@ -34,7 +34,11 @@ OurTestScene::OurTestScene(
 	InitlightCameraBuffer();
 	InitMaterialBuffer();
 
-	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP);
+	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_MIRROR);
+
+	//filter can be changed to: _MIN_MAG_MIP_POINT, _MIN_MAG_MIP_LINEAR , _ANISOTROPIC
+	//Texture can be changed to: _MIRROR , _WRAP ,  _CLAMP
+
 }
 
 //
@@ -175,7 +179,7 @@ void OurTestScene::Render()
 	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	//m_quad->Render();
 	
-	//m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
+	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
 	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(2.0f, 5.0f, 2.0f, 1.0f));
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
 	UpdateMaterialBuffer(m_cube->material);
@@ -213,8 +217,14 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_quad);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
+	SAFE_DELETE(m_sphere);
+	SAFE_DELETE(m_cube);
+	SAFE_DELETE(m_moon);
 
 	SAFE_RELEASE(m_transformation_buffer);
+	SAFE_RELEASE(m_lightCamera_buffer);
+	SAFE_RELEASE(m_material_buffer);
+	SAFE_RELEASE(sampler);
 	// + release other CBuffers
 }
 

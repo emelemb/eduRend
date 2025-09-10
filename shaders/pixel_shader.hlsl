@@ -58,8 +58,8 @@ float4 PS_main(PSIn input) : SV_Target
     float3 V = normalize(CameraPos.xyz - input.WorldPos);
     float3 R = reflect(-L, N);
     
-    //float2 scaleUV = input.TexCoord * 2.5f; // Make texture not alignned 
-    float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
+    float2 scaleUV = input.TexCoord * 2.5f; // Make texture not alignned 
+    float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
     //float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     
     float3 ambientTerm = AmbientColor.xyz * diffuseText.xyz;
