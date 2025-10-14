@@ -1,12 +1,17 @@
 Texture2D texDiffuse : register(t0);
 Texture2D texNormal : register(t1);
+TextureCube skyBox : register(t5);
 
 SamplerState textureSampler : register(s0);
+SamplerState skyBoxSampler : register(s2);
+
 
 cbuffer LightCameraBuffer : register(b0)
 {
     float4 CameraPos;
     float4 LightPos;
+    int isSkybox;
+    float3 padding;
 };
 
 cbuffer MaterialBuffer : register(b1)
@@ -40,7 +45,14 @@ float4 PS_main(PSIn input) : SV_Target
 	
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
     //return float4(input.TexCoord, 0, 1);
-	
+    if (isSkybox == 1)
+    {
+        float3 viewDirection = normalize(input.WorldPos.xyz - CameraPos.xyz);
+        float3 skyColour = skyBox.Sample(skyBoxSampler, -viewDirection).xyz;
+        input.Normal *= -1;
+        return float4(skyColour, 1.0f);
+    }
+    
     float3 N = normalize(input.Normal);
     float3 T = normalize(input.Tangent);
     T = normalize(T - dot(T, N) * N);

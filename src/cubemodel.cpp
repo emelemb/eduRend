@@ -261,10 +261,10 @@ void CubeModel::Render()const
 
 
 	// Diffuse 
-	m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
+	//m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 	
 	// Normal
-	m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalTexture.TextureView);
+//	m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalTexture.TextureView);
 
 	// Render the cube (draw indices)
 	m_dxdevice_context->DrawIndexed(m_number_of_indices, 0, 0);

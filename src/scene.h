@@ -87,6 +87,8 @@ class OurTestScene : public Scene
 	//
 	Camera* m_camera;
 	ID3D11SamplerState* sampler;
+	ID3D11SamplerState* skybox_Sampler;
+
 
 	Model* m_quad;
 	Model* m_sponza;
@@ -96,6 +98,7 @@ class OurTestScene : public Scene
 	Model* m_verticalMoon;
 	Model* m_verticalSmallMoon;
 	Model* m_verticalCube;
+	Model* m_skyBox;
 
 	Model* m_sphere;
 
@@ -107,6 +110,7 @@ class OurTestScene : public Scene
 	mat4f m_verticalMoon_transform;
 	mat4f m_verticalSmallMoon_transform;
 	mat4f m_verticalCube_transform;
+	mat4f m_skyBox_transform;
 
 	mat4f m_sphere_transform;
 
@@ -122,6 +126,8 @@ class OurTestScene : public Scene
 	vec3f camera_pos_world;
 	vec4f camera_pos;
 	vec4f light_pos;
+
+	Texture cube_texture;
 
 	Material sphere_material;
 	Material verticalMoon_material;
@@ -141,7 +147,9 @@ class OurTestScene : public Scene
 
 	void UpdateLightCameraBuffer(vec4f camera_pos, vec4f light_pos);
 
-	void SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode);
+	void UpdateSkyboxLightCameraBuffer(vec4f camera_pos, vec4f light_pos);
+
+	void SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode, ID3D11SamplerState *sampler);
 
 public:
 	/**

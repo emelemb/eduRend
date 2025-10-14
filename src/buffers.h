@@ -22,6 +22,8 @@ struct LightCameraBuffer
 {
     vec4f cameraPos;
     vec4f lightPos;
+    int isSkybox; 
+    vec3f padding;
 };
 
 struct MaterialBuffer

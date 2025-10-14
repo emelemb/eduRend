@@ -34,7 +34,31 @@ OurTestScene::OurTestScene(
 	InitlightCameraBuffer();
 	InitMaterialBuffer();
 
-	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP);
+	const char* cube_filenames[6] =
+	{
+	   "assets/cubemaps/Skybox/Skybox-posx.png",
+	   "assets/cubemaps/Skybox/Skybox-negx.png",
+	   "assets/cubemaps/Skybox/Skybox-negy.png",
+	   "assets/cubemaps/Skybox/Skybox-posy.png",
+	   "assets/cubemaps/Skybox/Skybox-posz.png",
+	   "assets/cubemaps/Skybox/Skybox-negz.png"
+	};
+
+
+	HRESULT hr = LoadCubeTextureFromFile(
+		m_dxdevice,
+		cube_filenames,
+		&cube_texture);
+
+	if (SUCCEEDED(hr)) std::cout << "Cubemap OK" << std::endl;
+	else std::cout << "Cubemap failed to load" << std::endl;
+
+	unsigned cube_slot = 5;  // if cause issue make larger 
+	m_dxdevice_context->PSSetShaderResources(
+		cube_slot,
+		1,
+		&cube_texture.TextureView);
+
 }
 
 //
@@ -51,8 +75,14 @@ void OurTestScene::Init()
 	// Move camera to (0,0,5)
 	m_camera->MoveTo({ 0, 0, 5 });
 
+	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_MIRROR, sampler);
+	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_CLAMP, skybox_Sampler);
+
+
+
 	// Create objects
 	//m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
+	m_skyBox = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context);
@@ -109,6 +139,9 @@ void OurTestScene::Update(
 	//	mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
 
 	// Sponza model-to-world transformation
+
+	m_skyBox_transform = mat4f::translation(m_camera->GetPosition() - vec3f(0, 0, 0)) * mat4f::scaling(200.0f);
+
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
 		mat4f::scaling(0.05f);			 // The scene is quite large so scale it down to 5%
@@ -174,16 +207,21 @@ void OurTestScene::Render()
 	// Load matrices + the Quad's transformation to the device and render it
 	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	//m_quad->Render();
-	
-	//m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
+	m_dxdevice_context->PSSetSamplers(2, 1, &skybox_Sampler);
+	UpdateSkyboxLightCameraBuffer(0, vec4f(m_camera->GetCameraPos(), 1.0f));
+	UpdateTransformationBuffer(m_skyBox_transform, m_view_matrix, m_projection_matrix);
+	UpdateMaterialBuffer(m_skyBox->material);
+	m_skyBox->Render();
+
+	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
 	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(2.0f, 5.0f, 2.0f, 1.0f));
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
 	UpdateMaterialBuffer(m_cube->material);
 	m_cube->Render();
 
-	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
+	/*UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	UpdateMaterialBuffer(m_sponza->material, 1.0f);
-	m_sponza->Render();
+	m_sponza->Render();*/
 	
 	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
 	m_moon->Render();
@@ -215,6 +253,7 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_camera);
 
 	SAFE_RELEASE(m_transformation_buffer);
+	SAFE_RELEASE(cube_texture.TextureView);
 	// + release other CBuffers
 }
 
@@ -311,15 +350,29 @@ void OurTestScene::InitlightCameraBuffer()
 
 void OurTestScene::UpdateLightCameraBuffer(vec4f camera_pos, vec4f light_pos)
 {
+	
 	D3D11_MAPPED_SUBRESOURCE resource;
 	m_dxdevice_context->Map(m_lightCamera_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	LightCameraBuffer* lightCamDataBuffer = (LightCameraBuffer*)resource.pData;
 	lightCamDataBuffer->cameraPos = camera_pos;
 	lightCamDataBuffer->lightPos = light_pos;
+	lightCamDataBuffer->isSkybox = 0;
+	m_dxdevice_context->Unmap(m_lightCamera_buffer, 0);
+	
+}
+
+void OurTestScene::UpdateSkyboxLightCameraBuffer(vec4f camera_pos, vec4f light_pos)
+{
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_lightCamera_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	LightCameraBuffer* lightCamDataBuffer = (LightCameraBuffer*)resource.pData;
+	lightCamDataBuffer->cameraPos = camera_pos;
+	lightCamDataBuffer->lightPos = light_pos;
+	lightCamDataBuffer->isSkybox = 1;
 	m_dxdevice_context->Unmap(m_lightCamera_buffer, 0);
 }
 
-void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode)
+void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode, ID3D11SamplerState *sampler)
 {
 	D3D11_SAMPLER_DESC samplerDesc =
 	{
