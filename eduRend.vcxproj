@@ -157,9 +157,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="cubemodel.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="src\buffers.h" />
+    <ClInclude Include="src\cubemodel.h" />
     <ClInclude Include="src\objmodel.h" />
     <ClInclude Include="src\quadmodel.h" />
     <ClInclude Include="src\camera.h" />

@@ -1,6 +1,6 @@
 #include "Cubemodel.h"
 
-CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Model(dxdevice, dxdevice_context) {
+CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context ,bool isSkybox) : Model(dxdevice, dxdevice_context) {
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned> indices;
@@ -160,6 +160,37 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	v23.Tangent = { 0, 0, 1 };
 	v23.Binormal = { 0, 1, 0 };
 
+	if (isSkybox == true)
+	{
+		v0.Normal = { 0, 0, -1 };
+		v1.Normal = { 0, 0, -1 };
+		v2.Normal = { 0, 0, -1 };
+		v3.Normal = { 0, 0, -1 };
+		v4.Normal = { 0, 0, 1 };
+		v5.Normal = { 0, 0, 1 };
+		v6.Normal = { 0, 0, 1 };
+		v7.Normal = { 0, 0, 1 };
+		v8.Normal = { 0, -1, 0 };
+		v9.Normal = { 0, -1, 0 };
+		v10.Normal = { 0, -1, 0 };
+		v11.Normal = { 0, -1, 0 };
+		v12.Normal = { 0, 1, 0 };
+		v13.Normal = { 0, 1, 0 };
+		v14.Normal = { 0, 1, 0 };
+		v15.Normal = { 0, 1, 0 };
+		v16.Normal = { -1, 0, 0 };
+		v17.Normal = { -1, 0, 0 };
+		v18.Normal = { -1, 0, 0 };
+		v19.Normal = { -1, 0, 0 };
+		v20.Normal = { 1, 0, 0 };
+		v21.Normal = { 1, 0, 0 };
+		v22.Normal = { 1, 0, 0 };
+		v23.Normal = { 1, 0, 0 };
+
+
+
+	}
+
 	vertices.push_back(v0);
 	vertices.push_back(v1);
 	vertices.push_back(v2);
@@ -185,19 +216,41 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	vertices.push_back(v22);
 	vertices.push_back(v23);
 #pragma endregion
-	for (size_t i = 0; i < 6; i++)
+	
+	if (isSkybox)
 	{
-		int temp = i * 4;
+		for (size_t i = 0; i < 6; i++)
+		{
+			int temp = i * 4;
 
-		// Triangle #1
-		indices.push_back(temp + 0);
-		indices.push_back(temp + 1);
-		indices.push_back(temp + 3);
-		// Triangle #2
-		indices.push_back(temp + 1);
-		indices.push_back(temp + 2);
-		indices.push_back(temp + 3);
+			// Triangle #1
+			indices.push_back(temp + 0);
+			indices.push_back(temp + 3);
+			indices.push_back(temp + 1);
+			// Triangle #2
+			indices.push_back(temp + 1);
+			indices.push_back(temp + 3);
+			indices.push_back(temp + 2);
+		}
 	}
+	else 
+	{
+		for (size_t i = 0; i < 6; i++)
+		{
+			int temp = i * 4;
+
+			// Triangle #1
+			indices.push_back(temp + 0);
+			indices.push_back(temp + 1);
+			indices.push_back(temp + 3);
+			// Triangle #2
+			indices.push_back(temp + 1);
+			indices.push_back(temp + 2);
+			indices.push_back(temp + 3);
+		}
+	}
+
+
 
 	// Vertex Buffer
 	D3D11_BUFFER_DESC vertexbufferDesc{ 0 };

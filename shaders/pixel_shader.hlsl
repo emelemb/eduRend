@@ -70,18 +70,23 @@ float4 PS_main(PSIn input) : SV_Target
     float3 V = normalize(CameraPos.xyz - input.WorldPos);
     float3 R = reflect(-L, N);
     
+    float3 reflectRay = reflect(V, input.Normal);
+    float3 reflectedColor = skyBox.Sample(skyBoxSampler, reflectRay).xyz;
+   
+      
     //float2 scaleUV = input.TexCoord * 2.5f; // Make texture not alignned 
     float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     //float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     
     float3 ambientTerm = AmbientColor.xyz * diffuseText.xyz;
     float diff = max(dot(L, N), 0.0f);
-    float3 diffuseTerm = DiffuseColor.xyz * diff * diffuseText.xyz;
+    float3 diffuseTerm = DiffuseColor.xyz * diff * diffuseText.xyz + reflectedColor;
     float spec = pow(max(dot(R, V), 0.0f), Shinyness);
     float3 specularTerm = SpecularColor.xyz * spec;
     
     float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
-    return float4(finalColor, 1.0f);
+    
+    return float4(reflectedColor, 1.0f);
     
 
     //return diffuseText;

@@ -82,12 +82,12 @@ void OurTestScene::Init()
 
 	// Create objects
 	//m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
-	m_skyBox = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_skyBox = new CubeModel(m_dxdevice, m_dxdevice_context, true);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
-	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context);
+	m_cube = new CubeModel(m_dxdevice, m_dxdevice_context,false);
 	//m_anotherCube = new CubeModel(m_dxdevice, m_dxdevice_context);
-	m_moon = new CubeModel(m_dxdevice, m_dxdevice_context);
+	//m_moon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	//m_verticalMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	//m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	//m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
@@ -151,7 +151,7 @@ void OurTestScene::Update(
 		mat4f::scaling(1.5, 1.5, 1.5);
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f)* // Rotate continuously around the y-axis
+		mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f)* // Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
 	//m_verticalCube_transform = mat4f::translation(0, 1, 0) *			// No translation
@@ -222,9 +222,9 @@ void OurTestScene::Render()
 	/*UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	UpdateMaterialBuffer(m_sponza->material, 1.0f);
 	m_sponza->Render();*/
-	
-	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
-	m_moon->Render();
+	//
+	//UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
+	//m_moon->Render();
 
 	/*UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();*/

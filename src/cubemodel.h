@@ -11,12 +11,18 @@ private:
     //    float u, v; // Texture coord
     //};
 
+   
     unsigned m_number_of_indices = 0;
     //std::vector<Vertex> m_vertices;
 /*  std::vector<uint32_t> m_indices;
     std::vector<Material> m_materials*/;
 
-public: CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context);
+public:
+    
+    bool isSkybox = false;
+   CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context, bool isSkybox);
 
-      virtual void Render() const;
+
+
+     virtual void Render() const;
 };

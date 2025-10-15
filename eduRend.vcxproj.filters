@@ -76,7 +76,7 @@
     <ClInclude Include="lib\stb_image.h">
       <Filter>Libraries</Filter>
     </ClInclude>
-    <ClInclude Include="cubemodel.h">
+    <ClInclude Include="src\cubemodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
