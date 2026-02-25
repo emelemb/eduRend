@@ -61,13 +61,13 @@ void OurTestScene::Init()
 	m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 
-	sphere_material.AmbientColour = { 0.0f, 0.0f, 1.0f };
-	sphere_material.DiffuseColour = { 0.0f, 0.0f, 0.0f };
-	sphere_material.SpecularColour = { 1.0f, 0.0f, 0.0f };
+	sphere_material.AmbientColour = { 0.0f, 0.2f, 0.5f };
+	sphere_material.DiffuseColour = { 0.0f, 0.5f, 0.5f };
+	sphere_material.SpecularColour = { 0.5f, 0.4f, 0.3f };
 
-	verticalMoon_material.AmbientColour = { 1.0f, 0.0f, 0.0f };
-	verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
-	verticalMoon_material.SpecularColour = { 0.0f, 0.0f, 1.0f };
+	verticalMoon_material.AmbientColour = { 0.3f, 0.2f, 0.0f };
+	verticalMoon_material.DiffuseColour = { 0.5f, 0.3f, 0.0f };
+	verticalMoon_material.SpecularColour = { 0.6f, 0.7f, 0.8f };
 
 	m_cube->SetMaterial(sphere_material);
 	m_anotherCube->SetMaterial(verticalMoon_material);
@@ -115,29 +115,11 @@ void OurTestScene::Update(
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
-	m_verticalCube_transform = mat4f::translation(0.0f, 5.0f, 5.0f) *			// No translation
-		mat4f::rotation(0.1, 1.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(0.1, 0.1, 0.1);
-
-	m_verticalMoon_transform = m_verticalCube_transform *
-		mat4f::translation(0, 40, 0) *
-		mat4f::rotation(-m_angle, 1.0f, 0.0f, 0.0f) *
-		mat4f::scaling(8, 8, 8);
-
-	m_verticalSmallMoon_transform = m_verticalMoon_transform *
-		mat4f::translation(0, 3, 0)*
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
-		mat4f::scaling(0.5, 0.5, 0.5);
-
     m_anotherCube_transfrom = m_cube_transform *
 		mat4f::translation(3, 0.5, 0) *
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
 		mat4f::scaling( 0.5, 0.5, 0.5);
 
-	m_moon_transform = m_anotherCube_transfrom *
-		mat4f::translation(5, 0.2, 0) *
-		mat4f::rotation(-m_angle, 0.0f, 3.0f, 0.0f) *
-		mat4f::scaling(0.2, 0.2, 0.2);
 
 	// Increment the rotation angle1
 	m_angle += m_angular_velocity * dt;
@@ -151,7 +133,7 @@ void OurTestScene::Update(
 		m_fps_cooldown = 2.0;
 	}
 
-	UpdateCameraAndLightBuffer(vec3f(0.0f, 5.0f, 5.0f), vec3f(m_camera->GetCameraPos()));
+	UpdateCameraAndLightBuffer(vec3f(m_camera->GetCameraPos()), vec3f(0.25f, 5.0f, 3.0f));
 }
 
 //
@@ -233,7 +215,7 @@ void OurTestScene::UpdateCameraAndLightBuffer(const vec3f& camera_pos, const vec
 	m_dxdevice_context->Map(m_cameraAndLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	LightCameraBuffer* CameraAndLightBuffer = (LightCameraBuffer*)resource.pData;
 	CameraAndLightBuffer->cameraPos = vec4f(camera_pos, 1.0f);
-	CameraAndLightBuffer->lightPos = vec4f(vec4f(10.0f * cos(m_angle +10), 4.0f, 10.0f * sin(m_angle+10), 1.0f));
+	CameraAndLightBuffer->lightPos = vec4f(light_pos, 1.0f);
 	m_dxdevice_context->Unmap(m_cameraAndLightBuffer, 0);
 
 }
