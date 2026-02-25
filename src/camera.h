@@ -76,7 +76,7 @@ private:
 	// numerical precision in the z-buffer
 	float m_near_plane;
 	float m_far_plane;
-	float sensitivity = 0.01f;
+	float sensitivity = 0.001f;
 	float pitch = 0.0000f;
 	float yaw = 0.0f;
 
