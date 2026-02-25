@@ -127,7 +127,7 @@ void OurTestScene::Update(
 		mat4f::scaling(0.2, 0.2, 0.2);
 
 	// Increment the rotation angle1
-	m_angle += m_angular_velocity * dt;
+	//m_angle += m_angular_velocity * dt;
 
 	// Print fps
 	m_fps_cooldown -= dt;
