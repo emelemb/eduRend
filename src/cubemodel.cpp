@@ -226,8 +226,9 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	// Create index buffer on device using descriptor & data
 	dxdevice->CreateBuffer(&indexbufferDesc, &indexData, &m_index_buffer);
 	SETNAME(m_index_buffer, "IndexBuffer");
-
-	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_diffuse.jpg", & material.DiffuseTexture);
+	
+	//REDN 4 
+	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/fence_diffuse.jpg", &material.DiffuseTexture);
 	if (FAILED(hr)) {
 		std::cerr << "ERROR: Failed to load texture: " << std::endl;
 	}
@@ -235,13 +236,21 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 		std::cout << "Successfully loaded texture:" << std::endl;
 	}
 
-	hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_normal.jpg", &material.NormalTexture);
-	if (FAILED(hr)) {
-		std::cerr << "ERROR: Failed to load texture: " << std::endl;
-	}
-	else {
-		std::cout << "Successfully loaded texture:" << std::endl;
-	}
+	//HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_diffuse.jpg", & material.DiffuseTexture);
+	//if (FAILED(hr)) {
+	//	std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	//}
+	//else {
+	//	std::cout << "Successfully loaded texture:" << std::endl;
+	//}
+
+	//hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_normal.jpg", &material.NormalTexture);
+	//if (FAILED(hr)) {
+	//	std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	//}
+	//else {
+	//	std::cout << "Successfully loaded texture:" << std::endl;
+	//}
 
 	m_number_of_indices = (unsigned int)indices.size();
 }
@@ -258,7 +267,6 @@ void CubeModel::Render()const
 
 	// Set primitive topology to triangles
 	m_dxdevice_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 
 	// Diffuse 
 	m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
