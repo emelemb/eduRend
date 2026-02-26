@@ -10,86 +10,155 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 
 	// Test for Rend 4
 	// Front face (normal: 0,0,1)
-	v0.Position = { 0, 0.5, 0 };
-	v0.Normal = { -1, 0, 0 };
+#pragma region vertices
+	v0.Position = { -0.5f, -0.5f, 0.5f };
+	v0.Normal = { 0, 0, 1 };
 	v0.TexCoord = { 0, 0 };
-	v1.Position = { 0, 0.5, 0 };
-	v1.Normal = { 0, -1, 0 };
-	v1.TexCoord = { 0, 0 };
-	v2.Position = { 0, 0.5, 0 };
-	v2.Normal = { 0, 0, -1 };
-	v2.TexCoord = { 1,0 };
+	v0.Tangent = { 1, 0, 0 };
+	v0.Binormal = { 0, 1, 0 };
 
-	v3.Position = { 0, 1.5, 0 };
-	v3.Normal = { -1, 0, 0 };
+	v1.Position = { 0.5f, -0.5f, 0.5f };
+	v1.Normal = { 0, 0, 1 };
+	v1.TexCoord = { 1, 0 };
+	v1.Tangent = { 1, 0, 0 };
+	v1.Binormal = { 0, 1, 0 };
+
+	v2.Position = { 0.5f, 0.5f, 0.5f };
+	v2.Normal = { 0, 0, 1 };
+	v2.TexCoord = { 1, 1 };
+	v2.Tangent = { 1, 0, 0 };
+	v2.Binormal = { 0, 1, 0 };
+	  
+	v3.Position = { -0.5f, 0.5f, 0.5f };
+	v3.Normal = { 0, 0, 1 };
 	v3.TexCoord = { 0, 1 };
-	v4.Position = { 0, 1.5, 0 };
-	v4.Normal = { 0, 1, 0 };
-	v4.TexCoord = { 0, 1 };
-	v5.Position = { 0, 1.5, 0 };
+	v3.Tangent = { 1, 0, 0 };
+	v3.Binormal = { 0, 1, 0 };
+
+	// Back face (normal: 0,0,-1)
+	v4.Position = { -0.5f, -0.5f, -0.5f };
+	v4.Normal = { 0, 0, -1 };
+	v4.TexCoord = { 1, 0 };
+	v4.Tangent = { -1, 0, 0 };
+	v4.Binormal = { 0, 1, 0 };
+
+	v5.Position = { -0.5f, 0.5f, -0.5f };
 	v5.Normal = { 0, 0, -1 };
 	v5.TexCoord = { 1, 1 };
+	v5.Tangent = { -1, 0, 0 };
+	v5.Binormal = { 0, 1, 0 };
 
-	v6.Position = { 1, 1.5, 0 };
-	v6.Normal = { 1, 0, 0 };
-	v6.TexCoord = { 1, 1 };
-	v7.Position = { 1, 1.5, 0 };
-	v7.Normal = { 0, 1, 0 };
-	v7.TexCoord = { 1, 1 };
-	v8.Position = { 1, 1.5, 0 };
-	v8.Normal = { 0, 0, -1 };
-	v8.TexCoord = { 0, 1 };
+	v6.Position = { 0.5f, 0.5f, -0.5f };
+	v6.Normal = { 0, 0, -1 };
+	v6.TexCoord = { 0, 1 };
+	v6.Tangent = { -1, 0, 0 };
+	v6.Binormal = { 0, 1, 0 };
 
-	v9.Position = { 1, 0.5, 0 };
-	v9.Normal = { 1, 0, 0 };
+	v7.Position = { 0.5f, -0.5f, -0.5f };
+	v7.Normal = { 0, 0, -1 };
+	v7.TexCoord = { 0, 0 };
+	v7.Tangent = { -1, 0, 0 };
+	v7.Binormal = { 0, 1, 0 };
+
+	// Top face (normal: 0,1,0)
+	v8.Position = { -0.5f, 0.5f, 0.5f };
+	v8.Normal = { 0, 1, 0 };
+	v8.TexCoord = { 0, 0 };
+	v8.Tangent = { 1, 0, 0 };
+	v8.Binormal = { 0, 0, -1 };
+
+	v9.Position = { 0.5f, 0.5f, 0.5f };
+	v9.Normal = { 0, 1, 0 };
 	v9.TexCoord = { 1, 0 };
-	v10.Position = { 1, 0.5, 0 };
-	v10.Normal = { 0, -1, 0 };
-	v10.TexCoord = { 1, 0 };
-	v11.Position = { 1, 0.5, 0 };
-	v11.Normal = { 0, 0, -1 };
-	v11.TexCoord = { 0, 0 };
+	v9.Tangent = { 1, 0, 0 };
+	v9.Binormal = { 0, 0, -1 };
 
-	v12.Position = { 0, 0.5, 1 };
-	v12.Normal = { -1, 0, 0 };
-	v12.TexCoord = { 1, 0 };
-	v13.Position = { 0, 0.5, 1 };
+	v10.Position = { 0.5f, 0.5f, -0.5f };
+	v10.Normal = { 0, 1, 0 };
+	v10.TexCoord = { 1, 1 };
+	v10.Tangent = { 1, 0, 0 };
+	v10.Binormal = { 0, 0, -1 };
+
+	v11.Position = { -0.5f, 0.5f, -0.5f };
+	v11.Normal = { 0, 1, 0 };
+	v11.TexCoord = { 0, 1 };
+	v11.Tangent = { 1, 0, 0 };
+	v11.Binormal = { 0, 0, -1 };
+
+	// Bottom face (normal: 0,-1,0)
+	v12.Position = { -0.5f, -0.5f, -0.5f };
+	v12.Normal = { 0, -1, 0 };
+	v12.TexCoord = { 0, 1 };
+	v12.Tangent = { 1, 0, 0 };
+	v12.Binormal = { 0, 0, 1 };
+
+	v13.Position = { 0.5f, -0.5f, -0.5f };
 	v13.Normal = { 0, -1, 0 };
-	v13.TexCoord = { 0, 1 };
-	v14.Position = { 0, 0.5, 1 };
-	v14.Normal = { 0, 0, 1 };
-	v14.TexCoord = { 0, 0 };
+	v13.TexCoord = { 1, 1 };
+	v13.Tangent = { 1, 0, 0 };
+	v13.Binormal = { 0, 0, 1 };
 
-	v15.Position = { 0, 1.5, 1 };
-	v15.Normal = { -1, 0, 0 };
-	v15.TexCoord = { 1, 1 };
-	v16.Position = { 0, 1.5, 1 };
-	v16.Normal = { 0 ,1, 0 };
+	v14.Position = { 0.5f, -0.5f, 0.5f };
+	v14.Normal = { 0, -1, 0 };
+	v14.TexCoord = { 1, 0 };
+	v14.Tangent = { 1, 0, 0 };
+	v14.Binormal = { 0, 0, 1 };
+
+	v15.Position = { -0.5f, -0.5f, 0.5f };
+	v15.Normal = { 0, -1, 0 };
+	v15.TexCoord = { 0, 0 };
+	v15.Tangent = { 1, 0, 0 };
+	v15.Binormal = { 0, 0, 1 };
+
+	// Right face (normal: 1,0,0)
+	v16.Position = { 0.5f, -0.5f, -0.5f };
+	v16.Normal = { 1, 0, 0 };
 	v16.TexCoord = { 0, 0 };
-	v17.Position = { 0, 1.5, 1 };
-	v17.Normal = { 0 ,0, 1 };
-	v17.TexCoord = { 0, 1 };
+	v16.Tangent = { 0, 1, 0 };
+	v16.Binormal = { 0, 0, 1 };
 
-	v18.Position = { 1, 1.5, 1 };
-	v18.Normal = { 1 ,0, 0 };
-	v18.TexCoord = { 0, 1 };
-	v19.Position = { 1, 1.5, 1 };
-	v19.Normal = { 0 ,1, 0 };
-	v19.TexCoord = { 1, 0 };
-	v20.Position = { 1, 1.5, 1 };
-	v20.Normal = { 0 ,0, 1 };
-	v20.TexCoord = { 1, 1 };
+	v17.Position = { 0.5f, 0.5f, -0.5f };
+	v17.Normal = { 1, 0, 0 };
+	v17.TexCoord = { 1, 0 };
+	v17.Tangent = { 0, 1, 0 };
+	v17.Binormal = { 0, 0, 1 };
 
-	v21.Position = { 1, 0.5, 1 };
-	v21.Normal = { 1 ,0, 0 };
-	v21.TexCoord = { 0, 0 };
-	v22.Position = { 1, 0.5, 1 };
-	v22.Normal = { 0 ,-1, 0 };
-	v22.TexCoord = { 1, 1 };
-	v23.Position = { 1, 0.5, 1 };
-	v23.Normal = { 0 ,0, 1 };
-	v23.TexCoord = { 1, 0 };
+	v18.Position = { 0.5f, 0.5f, 0.5f };
+	v18.Normal = { 1, 0, 0 };
+	v18.TexCoord = { 1, 1 };
+	v18.Tangent = { 0, 1, 0 };
+	v18.Binormal = { 0, 0, 1 };
 
+	v19.Position = { 0.5f, -0.5f, 0.5f };
+	v19.Normal = { 1, 0, 0 };
+	v19.TexCoord = { 0, 1 };
+	v19.Tangent = { 0, 1, 0 };
+	v19.Binormal = { 0, 0, 1 };
+
+	// Left face (normal: -1,0,0)
+	v20.Position = { -0.5f, -0.5f, 0.5f };
+	v20.Normal = { -1, 0, 0 };
+	v20.TexCoord = { 1, 0 };
+	v20.Tangent = { 0, 0, 1 };
+	v20.Binormal = { 0, 1, 0 };
+
+	v21.Position = { -0.5f, 0.5f, 0.5f };
+	v21.Normal = { -1, 0, 0 };
+	v21.TexCoord = { 1, 1 };
+	v21.Tangent = { 0, 0, 1 };
+	v21.Binormal = { 0, 1, 0 };
+
+	v22.Position = { -0.5f, 0.5f, -0.5f };
+	v22.Normal = { -1, 0, 0 };
+	v22.TexCoord = { 0, 1 };
+	v22.Tangent = { 0, 0, 1 };
+	v22.Binormal = { 0, 1, 0 };
+
+	v23.Position = { -0.5f, -0.5f, -0.5f };
+	v23.Normal = { -1, 0, 0 };
+	v23.TexCoord = { 0, 0 };
+	v23.Tangent = { 0, 0, 1 };
+	v23.Binormal = { 0, 1, 0 };
 
 	vertices.push_back(v0);
 	vertices.push_back(v1);
@@ -115,63 +184,20 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	vertices.push_back(v21);
 	vertices.push_back(v22);
 	vertices.push_back(v23);
+#pragma endregion
+	for (size_t i = 0; i < 6; i++)
+	{
+		int temp = i * 4;
 
-
-	// Populate the index array with two triangles
-	// Backside
-	indices.push_back(2);
-	indices.push_back(5);
-	indices.push_back(11);
-
-	indices.push_back(5);
-	indices.push_back(8);
-	indices.push_back(11);
-
-	// Left side
-	indices.push_back(12);
-	indices.push_back(15);
-	indices.push_back(0);
-
-	indices.push_back(15);
-	indices.push_back(3);
-	indices.push_back(0);
-
-	//Right side 
-	indices.push_back(9);
-	indices.push_back(6);
-	indices.push_back(21);
-
-	indices.push_back(6);
-	indices.push_back(18);
-	indices.push_back(21);
-
-	//front side
-	indices.push_back(23);
-	indices.push_back(20);
-	indices.push_back(14);
-
-	indices.push_back(20);
-	indices.push_back(17);
-	indices.push_back(14);
-
-	//top?
-	indices.push_back(4);
-	indices.push_back(16);
-	indices.push_back(7);
-
-	indices.push_back(16);
-	indices.push_back(19);
-	indices.push_back(7);
-
-	// Bottom 
-	indices.push_back(13);
-	indices.push_back(1);
-	indices.push_back(22);
-
-	indices.push_back(1);
-	indices.push_back(10);
-	indices.push_back(22);
-
+		// Triangle #1
+		indices.push_back(temp + 0);
+		indices.push_back(temp + 1);
+		indices.push_back(temp + 3);
+		// Triangle #2
+		indices.push_back(temp + 1);
+		indices.push_back(temp + 2);
+		indices.push_back(temp + 3);
+	}
 
 	// Vertex Buffer
 	D3D11_BUFFER_DESC vertexbufferDesc{ 0 };
