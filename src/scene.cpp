@@ -34,7 +34,7 @@ OurTestScene::OurTestScene(
 	InitlightCameraBuffer();
 	InitMaterialBuffer();
 
-	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_MIRROR);
+	SetSampler(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	//filter can be changed to: _MIN_MAG_MIP_POINT, _MIN_MAG_MIP_LINEAR , _ANISOTROPIC
 	//Texture can be changed to: _MIRROR , _WRAP ,  _CLAMP
@@ -66,10 +66,10 @@ void OurTestScene::Init()
 	//m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	//m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 
-	sphere_material.AmbientColour = { 0.5f, 0.5f, 0.5f };
-	sphere_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
-	sphere_material.SpecularColour = { 0.2f, 0.2f, 0.4f };
-	sphere_material.shinyness = 0.1f;
+	sphere_material.AmbientColour = { 0.2f, 0.2f, 0.5f };
+	sphere_material.DiffuseColour = { 0.5f, 0.2f, 0.4f };
+	sphere_material.SpecularColour = { 1.0f, 0.8f, 0.8f };
+	sphere_material.shinyness = 5;
 
 	//verticalMoon_material.AmbientColour = { 0.6f, 0.0f, 0.0f };
 	//verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
@@ -151,7 +151,7 @@ void OurTestScene::Update(
 		mat4f::scaling(0.2, 0.2, 0.2);
 
 	// Increment the rotation angle1
-	//m_angle += m_angular_velocity * dt;
+	m_angle += m_angular_velocity * dt;
 
 	// Print fps
 	m_fps_cooldown -= dt;
@@ -162,7 +162,7 @@ void OurTestScene::Update(
 		m_fps_cooldown = 2.0;
 	}
 
-	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(2.0f, 1.0f, 2.0f, 1.0f));
+	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(3.0f, 2.0f, 2.0f, 0.0f));
 }
 
 //

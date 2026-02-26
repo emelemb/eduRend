@@ -201,7 +201,7 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	SETNAME(m_index_buffer, "IndexBuffer");
 	
 	//REDN 4 
-	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/fence_diffuse.jpg", &material.DiffuseTexture);
+	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/yroadcrossing.png", &material.DiffuseTexture);
 	if (FAILED(hr)) {
 		std::cerr << "ERROR: Failed to load texture: " << std::endl;
 	}

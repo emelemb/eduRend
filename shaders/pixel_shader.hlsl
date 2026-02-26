@@ -42,7 +42,7 @@ float4 PS_main(PSIn input) : SV_Target
     //return float4(input.TexCoord, 0, 1);
 	
     float3 N = normalize(input.Normal);
-    float3 T = normalize(input.Tangent);
+    float3 T = normalize(texNormal.Sample(textureSampler, input.TexCoord).xyz * 2.0f - 1.0f);
     T = normalize(T - dot(T, N) * N);
     
     float3 B = cross(N, T);
@@ -51,7 +51,7 @@ float4 PS_main(PSIn input) : SV_Target
     
     float3 normalTS = texNormal.Sample(textureSampler, input.TexCoord).xyz * 2.0f - 1.0f;
 
-    N = normalize(mul(normalTS, TBN));
+    N = normalize(mul(TBN, normalTS));
 
       //float3 N = normalize(mul(normalTS, TBN));
     float3 L = normalize(LightPos.xyz - input.WorldPos);
@@ -60,13 +60,13 @@ float4 PS_main(PSIn input) : SV_Target
     
     float2 scaleUV = input.TexCoord * 2.5f;
     // Make texture not alignned 
-    //float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
-    float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
+    float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
+    //float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     
     float3 ambientTerm = AmbientColor.xyz * diffuseText.xyz;
     float diff = max(dot(L, N), 0.0f);
     float3 diffuseTerm = DiffuseColor.xyz * diff * diffuseText.xyz;
-    float spec = pow(max(dot(R, V), 0.0f), 0.5);
+    float spec = pow(max(dot(R, V), 0.0f), Shinyness);
     float3 specularTerm = SpecularColor.xyz * spec;
     
     float3 finalColor = ambientTerm + diffuseTerm + specularTerm;
