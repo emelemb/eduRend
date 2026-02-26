@@ -122,7 +122,7 @@ void OurTestScene::Update(
 
 
 	// Increment the rotation angle1
-	m_angle += m_angular_velocity * dt;
+	//m_angle += m_angular_velocity * dt;
 
 	// Print fps
 	m_fps_cooldown -= dt;
@@ -133,7 +133,7 @@ void OurTestScene::Update(
 		m_fps_cooldown = 2.0;
 	}
 
-	UpdateCameraAndLightBuffer(vec3f(m_camera->GetCameraPos()), vec3f(0.25f, 5.0f, 3.0f));
+	UpdateCameraAndLightBuffer(vec3f(m_camera->GetCameraPos()), vec3f(0.25f, 2.0f, 3.0f));
 }
 
 //
