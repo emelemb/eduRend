@@ -236,21 +236,21 @@ CubeModel::CubeModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_conte
 	//	std::cout << "Successfully loaded texture:" << std::endl;
 	//}
 
-	//HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_diffuse.jpg", & material.DiffuseTexture);
-	//if (FAILED(hr)) {
-	//	std::cerr << "ERROR: Failed to load texture: " << std::endl;
-	//}
-	//else {
-	//	std::cout << "Successfully loaded texture:" << std::endl;
-	//}
+	HRESULT hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_diffuse.jpg", & material.DiffuseTexture);
+	if (FAILED(hr)) {
+		std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	}
+	else {
+		std::cout << "Successfully loaded texture:" << std::endl;
+	}
 
-	//hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_normal.jpg", &material.NormalTexture);
-	//if (FAILED(hr)) {
-	//	std::cerr << "ERROR: Failed to load texture: " << std::endl;
-	//}
-	//else {
-	//	std::cout << "Successfully loaded texture:" << std::endl;
-	//}
+	hr = LoadTextureFromFile(m_dxdevice, "assets/textures/0001CD_normal.jpg", &material.NormalTexture);
+	if (FAILED(hr)) {
+		std::cerr << "ERROR: Failed to load texture: " << std::endl;
+	}
+	else {
+		std::cout << "Successfully loaded texture:" << std::endl;
+	}
 
 	m_number_of_indices = (unsigned int)indices.size();
 }

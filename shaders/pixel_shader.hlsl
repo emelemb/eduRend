@@ -59,13 +59,13 @@ float4 PS_main(PSIn input) : SV_Target
     float3 R = reflect(-L, N);
     
     float2 scaleUV = input.TexCoord * 2.5f; // Make texture not alignned 
-    float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
-    //float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
+    //float4 diffuseText = texDiffuse.Sample(textureSampler, scaleUV);
+    float4 diffuseText = texDiffuse.Sample(textureSampler, input.TexCoord);
     
     float3 ambientTerm = AmbientColor.xyz * diffuseText.xyz;
     float diff = max(dot(L, N), 0.0f);
     float3 diffuseTerm = DiffuseColor.xyz * diff * diffuseText.xyz;
-    float spec = pow(max(dot(R, V), 0.0f), Shinyness);
+    float spec = pow(max(dot(R, V), 0.0f), 0.5);
     float3 specularTerm = SpecularColor.xyz * spec;
     
     float3 finalColor = ambientTerm + diffuseTerm + specularTerm;

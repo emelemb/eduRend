@@ -66,9 +66,10 @@ void OurTestScene::Init()
 	//m_verticalSmallMoon = new CubeModel(m_dxdevice, m_dxdevice_context);
 	//m_verticalCube = new CubeModel(m_dxdevice, m_dxdevice_context);
 
-	sphere_material.AmbientColour = { 0.0f, 0.4f, 0.0f };
+	sphere_material.AmbientColour = { 0.5f, 0.5f, 0.5f };
 	sphere_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
-	sphere_material.SpecularColour = { 1.0f, 1.0f, 1.0f };
+	sphere_material.SpecularColour = { 0.2f, 0.2f, 0.4f };
+	sphere_material.shinyness = 0.1f;
 
 	//verticalMoon_material.AmbientColour = { 0.6f, 0.0f, 0.0f };
 	//verticalMoon_material.DiffuseColour = { 0.5f, 0.0f, 0.0f };
@@ -99,7 +100,7 @@ void OurTestScene::Update(
 
 
 	camera_pos_world = m_camera->GetCameraPos();
-	light_pos = vec4f(0.0f, 300, 0.0f, 1.0f);
+	light_pos = vec4f(0.0f, 3, 0.0f, 1.0f);
 
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
@@ -160,6 +161,8 @@ void OurTestScene::Update(
 		//		printf("fps %i\n", (int)(1.0f / dt));
 		m_fps_cooldown = 2.0;
 	}
+
+	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(2.0f, 1.0f, 2.0f, 1.0f));
 }
 
 //
@@ -167,6 +170,7 @@ void OurTestScene::Update(
 //
 void OurTestScene::Render()
 {
+	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
 	// Bind transformation_buffer to slot b0 of the VS
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
 	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_lightCamera_buffer);
@@ -178,19 +182,18 @@ void OurTestScene::Render()
 	// Load matrices + the Quad's transformation to the device and render it
 	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	//m_quad->Render();
-	
-	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
-	UpdateLightCameraBuffer(vec4f(m_camera->GetCameraPos(), 1.0f), vec4f(2.0f, 5.0f, 2.0f, 1.0f));
+
+	UpdateMaterialBuffer(sphere_material);
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
-	UpdateMaterialBuffer(m_cube->material);
 	m_cube->Render();
 
+	UpdateMaterialBuffer(sphere_material);
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
-	UpdateMaterialBuffer(m_sponza->material, 1.0f);
 	m_sponza->Render();
 	
 	UpdateTransformationBuffer(m_moon_transform, m_view_matrix, m_projection_matrix);
 	m_moon->Render();
+
 
 	/*UpdateTransformationBuffer(m_anotherCube_transfrom, m_view_matrix, m_projection_matrix);
 	m_anotherCube->Render();*/

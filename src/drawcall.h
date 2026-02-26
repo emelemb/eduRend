@@ -38,7 +38,7 @@ struct Material
 	vec3f AmbientColour = { 0.5f, 0.5f, 0.5f }; //!< Ambient colour component
 	vec3f DiffuseColour = { 0.5, 0.5f, 0.5f }; //!< Diffuse colour component
 	vec3f SpecularColour = { 0.1f, 0.1f, 0.1f }; //!< Specular colour component
-	float shinyness = 1.0f;
+	float shinyness = 10.0f;
 
 	std::string Name; //!< Name of the Material
 
